@@ -1,5 +1,5 @@
 packages:
-  - '.'  # 当前根目录作为唯一包
+  - '.' # 当前根目录作为唯一包
 onlyBuiltDependencies:
   - esbuild
   - sharp
