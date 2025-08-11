@@ -1,0 +1,13 @@
+name = "blog-astro"
+compatibility_date = "2025-08-11"
+
+[build]
+command = "pnpm run build:ci"
+
+[assets]
+directory = "./dist"
+
+# 以下是可选配置，绑定你自己的域名和 Zone ID
+# [[routes]]
+# pattern = "yourdomain.com/*"
+# zone_id = "xxxxxxxxxxxxxxxxxxxxxx"
