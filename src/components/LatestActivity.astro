@@ -1,0 +1,103 @@
+---
+// src/components/LatestActivity.astro
+import { getPublicEntries } from '../utils/content';
+
+// 1. **预先定义变量**
+// 我们将 recentActivity 初始化为一个空数组。
+// 这样即使后面的 try 块失败，这个变量也始终存在，不会导致 ReferenceError。
+let recentActivity = [];
+
+try {
+  // 2. 将所有可能出错的逻辑都放进 try...catch 块
+  const posts = await getPublicEntries('Posts');
+  const tweets = await getPublicEntries('Tweets');
+
+  const processedPosts = posts.map((post) => ({
+    type: '文章',
+    date: post.data.pubDate,
+    title: post.data.title,
+    url: `/posts/${post.slug}/`,
+  }));
+
+  const processedTweets = tweets.map((tweet) => ({
+    type: '片段',
+    date: tweet.data.pubDate,
+    title: tweet.body.replace(/<[^>]*>?/gm, '').substring(0, 50) + '...',
+    url: `/tweets#${tweet.slug}`,
+  }));
+
+  const allActivity = [...processedPosts, ...processedTweets].sort(
+    (a, b) => b.date.valueOf() - a.date.valueOf(),
+  );
+
+  // 如果成功，就用真实数据覆盖空的 recentActivity 数组
+  recentActivity = allActivity.slice(0, 5);
+} catch (error) {
+  // 3. 如果出现任何错误，在终端打印它，但不会让页面崩溃
+  console.error('Error fetching or processing recent activity:', error);
+}
+---
+
+<section class="latest-activity">
+  <h2>最近动态</h2>
+  <ul>
+    {
+      recentActivity.map((item) => (
+        <li>
+          <a href={item.url}>
+            <span class={`tag ${item.type === '文章' ? 'post' : 'tweet'}`}>
+              {item.type}
+            </span>
+            <span class="title">{item.title}</span>
+            <time>{item.date.toLocaleDateString()}</time>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .latest-activity {
+    margin-top: 3rem;
+  }
+  .latest-activity ul {
+    list-style: none;
+    padding: 0;
+  }
+  .latest-activity li a {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: var(--pico-border-radius);
+    text-decoration: none;
+    transition: background-color 0.2s ease-in-out;
+  }
+  .latest-activity li a:hover {
+    background-color: var(--pico-muted-background-color);
+  }
+  .tag {
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--pico-border-radius);
+    color: var(--pico-primary-inverse);
+  }
+  .tag.post {
+    background-color: var(--pico-primary);
+  }
+  .tag.tweet {
+    background-color: var(--pico-secondary);
+  }
+  .title {
+    color: var(--pico-color);
+    font-weight: 500;
+  }
+  time {
+    font-size: 0.9rem;
+    color: var(--pico-muted-color);
+    justify-self: end;
+  }
+</style>

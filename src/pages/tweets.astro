@@ -1,0 +1,50 @@
+---
+// src/pages/tweets.astro
+import { getPublicEntries } from '../utils/content';
+import Layout from '../layouts/Layout.astro';
+
+// 获取 'tweets' 集合并按日期倒序排列
+const tweets = (await getPublicEntries('Tweets')).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+---
+
+<Layout title="我的片段">
+  <section>
+    <h2>片段流</h2>
+    <div class="tweet-stream">
+      {
+        tweets.map(async (tweet) => {
+          const { Content } = await tweet.render();
+          return (
+            <article class="tweet">
+              <time>{tweet.data.pubDate.toLocaleDateString()}</time>
+              <div class="content">
+                <Content />
+              </div>
+            </article>
+          );
+        })
+      }
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .tweet-stream {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  .tweet {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--pico-muted-border-color);
+  }
+  .tweet time {
+    font-size: 0.85rem;
+    color: var(--pico-muted-color);
+  }
+  .tweet .content {
+    margin-top: 0.5rem;
+  }
+</style>

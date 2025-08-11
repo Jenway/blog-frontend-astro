@@ -1,0 +1,24 @@
+---
+// src/pages/novels/index.astro
+import { getPublicEntries } from '../../utils/content';
+import Layout from '../../layouts/Layout.astro';
+
+const chapters = (await getPublicEntries('Novels')).sort(
+  (a, b) => a.data.chapter - b.data.chapter,
+);
+---
+
+<Layout title="小说目录">
+  <section>
+    <h2>小说章节</h2>
+    <ol>
+      {
+        chapters.map((chapter) => (
+          <li>
+            <a href={`/novels/${chapter.slug}/`}>{chapter.data.title}</a>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+</Layout>

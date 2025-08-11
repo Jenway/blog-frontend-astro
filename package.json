@@ -2,13 +2,39 @@
   "name": "green-galaxy",
   "type": "module",
   "version": "0.0.1",
+  "private": true,
   "scripts": {
+    "//--- 核心命令 ---//": "",
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "//--- 本地预览真实内容 ---//": "",
+    "dev:content": "pnpm clean:content && pnpm fetch:content && pnpm dev",
+    "//--- CI/CD 专用 ---//": "",
+    "clean:content": "rimraf ./src/content",
+    "fetch:content": "git clone --depth 1 git@github.com:Jenway/blog_content.git ./src/content",
+    "build:ci": "pnpm clean:content && pnpm fetch:content && pnpm build",
+    "//--- 开发工具 ---//": "",
+    "format": "prettier --write . --plugin=prettier-plugin-astro",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "check": "pnpm format && pnpm lint && pnpm typecheck"
   },
   "dependencies": {
     "astro": "^5.12.9"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.33.0",
+    "@typescript-eslint/eslint-plugin": "^8.39.0",
+    "@typescript-eslint/parser": "^8.15.0",
+    "astro-eslint-parser": "^1.2.2",
+    "eslint": "^9.00.0",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-astro": "^1.2.3",
+    "globals": "^16.3.0",
+    "prettier": "^3.3.2",
+    "prettier-plugin-astro": "^0.14.0",
+    "rimraf": "^6.0.0"
   }
 }

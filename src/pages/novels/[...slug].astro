@@ -1,0 +1,27 @@
+---
+// src/pages/novels/[...slug].astro
+import { getPublicEntries } from '../../utils/content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const chapters = await getPublicEntries('Novels');
+  return chapters.map((chapter) => ({
+    params: { slug: chapter.slug },
+    props: chapter,
+  }));
+}
+
+const chapter = Astro.props;
+const { Content } = await chapter.render();
+---
+
+<Layout title={`${chapter.data.title} - 小说`}>
+  <article>
+    <header>
+      <h1>{chapter.data.title}</h1>
+      <p>第 {chapter.data.chapter} 章</p>
+    </header>
+    <hr />
+    <Content />
+  </article>
+</Layout>

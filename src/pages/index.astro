@@ -1,11 +1,67 @@
 ---
-import Welcome from '../components/Welcome.astro';
+// src/pages/index.astro
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import LatestActivity from '../components/LatestActivity.astro';
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="施工中 | Jenway 的新空间">
+  <header>
+    <h1>一个正在呼吸的空间</h1>
+    <p>新版博客建设（咕咕）中。</p>
+  </header>
+
+  <section class="contact-info">
+    <p>
+      联系我: <a href="mailto:jenwayhere@gmail.com">jenwayhere@gmail.com</a>
+    </p>
+    <p>
+      怀念旧版？<a href="/hexo">可以访问基于 Hexo 的旧站存档（2022 - 2024）</a
+      >。
+    </p>
+  </section>
+  <LatestActivity />
+  <hr />
+
+  <section class="placeholders">
+    <article class="card">
+      <h3>关于作者</h3>
+      <p>（记得添加一个卡片。）</p>
+    </article>
+    <article class="card">
+      <h3>项目动态</h3>
+      <p>（记得加点别的信息。）</p>
+    </article>
+  </section>
 </Layout>
+
+<style>
+  /* 为卡片和部分元素添加一些简单的样式 */
+  .contact-info {
+    margin: 2rem 0;
+    text-align: center;
+    font-size: 1.1rem;
+  }
+
+  .placeholders {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  @media (min-width: 768px) {
+    .placeholders {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .card {
+    padding: 1.5rem;
+    border: 1px solid var(--pico-muted-border-color);
+    border-radius: var(--pico-border-radius);
+  }
+
+  .card h3 {
+    margin-top: 0;
+  }
+</style>
