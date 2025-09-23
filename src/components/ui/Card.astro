@@ -1,0 +1,36 @@
+---
+interface Props {
+  variant?: 'default' | 'interactive' | 'sidebar' | 'archive';
+  as?: 'div' | 'section' | 'article' | 'a';
+  href?: string;
+  class?: string;
+  [key: string]: any;
+}
+
+const {
+  variant = 'default',
+  as = 'div',
+  href,
+  class: className = '',
+  ...props
+} = Astro.props as Props;
+
+const baseClasses = 'card';
+const variantClasses = {
+  default: '',
+  interactive: 'card--interactive',
+  sidebar: 'card--sidebar',
+  archive: 'card--archive',
+};
+
+const classes = [baseClasses, variantClasses[variant], className]
+  .filter(Boolean)
+  .join(' ');
+
+const componentTag = href ? 'a' : as;
+const Component = componentTag;
+---
+
+<Component class={classes} href={href} {...props}>
+  <slot />
+</Component>

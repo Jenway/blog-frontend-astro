@@ -13,8 +13,8 @@ export async function getStaticPaths() {
     paths.push({
       params: { page: i.toString() },
       props: {
-        currentPage: i
-      }
+        currentPage: i,
+      },
     });
   }
 

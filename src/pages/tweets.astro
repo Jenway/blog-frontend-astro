@@ -2,49 +2,77 @@
 // src/pages/tweets.astro
 import { getPublicEntries } from '../utils/content';
 import Layout from '../layouts/Layout.astro';
+import Button from '../components/ui/Button.astro';
+import Card from '../components/ui/Card.astro';
+
+const PAGE_SIZE = 10;
 
 // 获取 'tweets' 集合并按日期倒序排列
 const tweets = (await getPublicEntries('Tweets')).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
+
+const totalTweets = tweets.length;
+const totalPages = Math.ceil(totalTweets / PAGE_SIZE);
+const initialTweets = tweets.slice(0, PAGE_SIZE);
+
+const renderedTweets = await Promise.all(
+  initialTweets.map(async (tweet) => {
+    const { Content } = await tweet.render();
+    return {
+      slug: tweet.slug,
+      pubDate: tweet.data.pubDate,
+      Content,
+    };
+  }),
+);
+
+const hasMore = totalPages > 1;
 ---
 
 <Layout title="我的片段">
   <section>
     <h2>片段流</h2>
-    <div class="tweet-stream">
+    <div
+      id="tweet-stream"
+      class="tweet-stream"
+      data-page-size={PAGE_SIZE}
+      data-total-count={totalTweets}
+      data-loaded-count={renderedTweets.length}
+      data-total-pages={totalPages}
+    >
       {
-        tweets.map(async (tweet) => {
-          const { Content } = await tweet.render();
-          return (
-            <article class="tweet">
-              <time>{tweet.data.pubDate.toLocaleDateString()}</time>
-              <div class="content">
-                <Content />
-              </div>
-            </article>
-          );
-        })
+        renderedTweets.map(({ slug, pubDate, Content }) => (
+          <Card as="article" class="tweet" id={slug}>
+            <time datetime={pubDate?.toISOString()}>
+              {pubDate?.toLocaleDateString()}
+            </time>
+            <div class="tweet__content">
+              <Content />
+            </div>
+          </Card>
+        ))
       }
     </div>
+    {
+      hasMore && (
+        <div class="tweet-controls">
+          <Button
+            type="button"
+            variant="secondary"
+            class="tweet__load-more"
+            data-load-more
+          >
+            加载更多
+          </Button>
+          <p
+            class="tweet__status text-muted text-sm"
+            data-load-status
+            role="status"
+            aria-live="polite"
+          />
+        </div>
+      )
+    }
   </section>
 </Layout>
-
-<style>
-  .tweet-stream {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-  }
-  .tweet {
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--pico-muted-border-color);
-  }
-  .tweet time {
-    font-size: 0.85rem;
-    color: var(--pico-muted-color);
-  }
-  .tweet .content {
-    margin-top: 0.5rem;
-  }
-</style>

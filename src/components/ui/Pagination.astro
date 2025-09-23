@@ -1,0 +1,88 @@
+---
+interface Props {
+  currentPage: number;
+  totalPages: number;
+  baseUrl: string;
+  anchorId?: string;
+  class?: string;
+}
+
+const {
+  currentPage,
+  totalPages,
+  baseUrl,
+  anchorId,
+  class: className = '',
+} = Astro.props;
+
+const buildPageLink = (pageNumber: number) => {
+  const url = pageNumber === 1 ? baseUrl : `${baseUrl}${pageNumber}/`;
+  return anchorId ? `${url}#${anchorId}` : url;
+};
+
+const getPageNumbers = (total: number): number[] => {
+  return Array.from({ length: Math.max(0, total) }, (_, index) => index + 1);
+};
+
+const pageNumbers = getPageNumbers(totalPages);
+const hasPagination = totalPages > 1;
+---
+
+{
+  hasPagination && (
+    <nav class={`pagination ${className}`} aria-label="分页导航">
+      <div class="pagination__controls">
+        <div class="pagination__nav">
+          {currentPage > 1 ? (
+            <a
+              href={buildPageLink(currentPage - 1)}
+              rel="prev"
+              class="btn btn--outline btn--sm"
+            >
+              ← 上一页
+            </a>
+          ) : (
+            <span class="btn btn--outline btn--sm btn--disabled">← 上一页</span>
+          )}
+        </div>
+
+        <ul class="pagination__pages list--unstyled">
+          {pageNumbers.map((pageNum) => (
+            <li>
+              {pageNum === currentPage ? (
+                <span
+                  class="pagination__link pagination__link--active"
+                  aria-current="page"
+                >
+                  {pageNum}
+                </span>
+              ) : (
+                <a href={buildPageLink(pageNum)} class="pagination__link">
+                  {pageNum}
+                </a>
+              )}
+            </li>
+          ))}
+        </ul>
+
+        <div class="pagination__nav">
+          {currentPage < totalPages ? (
+            <a
+              href={buildPageLink(currentPage + 1)}
+              rel="next"
+              class="btn btn--outline btn--sm"
+            >
+              下一页 →
+            </a>
+          ) : (
+            <span class="btn btn--outline btn--sm btn--disabled">下一页 →</span>
+          )}
+        </div>
+      </div>
+
+      <div class="pagination__status text-muted text-sm text-center">
+        第 {currentPage} 页，共 {totalPages} 页
+      </div>
+    </nav>
+  )
+}

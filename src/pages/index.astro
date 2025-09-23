@@ -2,67 +2,79 @@
 // src/pages/index.astro
 import Layout from '../layouts/Layout.astro';
 import LatestActivity from '../components/LatestActivity.astro';
+import Button from '../components/ui/Button.astro';
+import Card from '../components/ui/Card.astro';
 ---
 
-<Layout title="施工中 | Jenway 的新空间">
-  <header>
-    <h1>一个正在呼吸的空间</h1>
-    <p>新版博客建设（咕咕）中。</p>
-  </header>
-
-  <section class="contact-info">
-    <p>
-      联系我: <a href="mailto:mail@jenway.link">mail@jenway.link</a>
+<Layout title="Jenway 的新空间">
+  <section class="hero">
+    <span class="eyebrow">Alpha Build</span>
+    <h1 class="hero__title">一个正在呼吸的数字花园</h1>
+    <p class="text-muted">
+      修剪旧文章、补写新片段，尝试把多年的碎片整理成一条可漫步的小径。你看到的一切都在实验中。
     </p>
-    <p>
-      怀念旧版？<a href="https://hexo.jenway.link"
-        >可以访问基于 Hexo 的旧站存档（2022 - 2024）</a
-      >。
-    </p>
+    <div class="hero__actions">
+      <Button href="/posts/" variant="primary">探索文章</Button>
+      <Button href="/tweets/" variant="secondary">浏览片段</Button>
+    </div>
   </section>
-  <LatestActivity />
-  <hr />
 
-  <section class="placeholders">
-    <article class="card">
-      <h3>关于作者</h3>
-      <p>（记得添加一个卡片。）</p>
-    </article>
-    <article class="card">
-      <h3>项目动态</h3>
-      <p>（记得加点别的信息。）</p>
-    </article>
+  <Card class="latest">
+    <div class="section-header">
+      <h2>最新动态</h2>
+      <p class="text-muted">最近写就的文章与片段，持续补货中。</p>
+    </div>
+    <LatestActivity />
+  </Card>
+
+  <div class="divider" role="presentation"></div>
+
+  <section class="grid grid--2-cols">
+    <Card class="highlight-card">
+      <h3>内容施工计划</h3>
+      <ul>
+        <li>迁移旧站精选文章，补齐插图与脚注。</li>
+        <li>把「片段」整理成年度合集，方便回看。</li>
+        <li>为小说世界观整理年表与角色关系。</li>
+      </ul>
+    </Card>
+    <Card class="highlight-card">
+      <h3>正在构思的模块</h3>
+      <ul>
+        <li>长文阅读体验：字体、行距与脚注样式。</li>
+        <li>图像走廊：把摄影、手账与素描集中展示。</li>
+        <li>订阅入口：用 Newsletter 推送最新动态。</li>
+      </ul>
+    </Card>
   </section>
+
+  <Card class="about">
+    <h2>关于 Jenway</h2>
+    <p>
+      写字、拍照、做梦的普通人。喜欢在广州与互联网之间穿梭，也常常沉迷于奇幻小说、科幻电影和一杯温热的拿铁。这个空间记录正在发生的创作、思考与试验。
+    </p>
+    <p class="text-muted">
+      旧站存档仍在：
+      <a href="https://hexo.jenway.link" target="_blank" rel="noopener"
+        >hexo.jenway.link</a
+      >
+    </p>
+  </Card>
+
+  <Fragment slot="sidebar">
+    <Card variant="sidebar">
+      <h3>保持联络</h3>
+      <p class="text-muted">来信、交换想法或约咖啡都可以：</p>
+      <a class="sidebar-link" href="mailto:mail@jenway.link">mail@jenway.link</a
+      >
+    </Card>
+    <Card variant="sidebar">
+      <h3>造景清单</h3>
+      <ul class="sidebar-list list--unstyled">
+        <li>补完片段分页与筛选器</li>
+        <li>引入夜间模式</li>
+        <li>撰写 About 与 FAQ</li>
+      </ul>
+    </Card>
+  </Fragment>
 </Layout>
-
-<style>
-  /* 为卡片和部分元素添加一些简单的样式 */
-  .contact-info {
-    margin: 2rem 0;
-    text-align: center;
-    font-size: 1.1rem;
-  }
-
-  .placeholders {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-    margin-top: 2rem;
-  }
-
-  @media (min-width: 768px) {
-    .placeholders {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-
-  .card {
-    padding: 1.5rem;
-    border: 1px solid var(--pico-muted-border-color);
-    border-radius: var(--pico-border-radius);
-  }
-
-  .card h3 {
-    margin-top: 0;
-  }
-</style>

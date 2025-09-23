@@ -2,6 +2,7 @@
 // src/pages/novels/[...slug].astro
 import { getPublicEntries } from '../../utils/content';
 import Layout from '../../layouts/Layout.astro';
+import Card from '../../components/ui/Card.astro';
 
 export async function getStaticPaths() {
   const chapters = await getPublicEntries('Novels');
@@ -16,12 +17,11 @@ const { Content } = await chapter.render();
 ---
 
 <Layout title={`${chapter.data.title} - 小说`}>
-  <article>
-    <header>
+  <Card as="article" class="prose-card">
+    <header class="prose-card__header">
       <h1>{chapter.data.title}</h1>
-      <p>第 {chapter.data.chapter} 章</p>
+      <p class="text-muted">第 {chapter.data.chapter} 章</p>
     </header>
-    <hr />
     <Content />
-  </article>
+  </Card>
 </Layout>

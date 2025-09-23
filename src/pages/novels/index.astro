@@ -2,6 +2,7 @@
 // src/pages/novels/index.astro
 import { getPublicEntries } from '../../utils/content';
 import Layout from '../../layouts/Layout.astro';
+import Card from '../../components/ui/Card.astro';
 
 const chapters = (await getPublicEntries('Novels')).sort(
   (a, b) => (a.data.chapter ?? 0) - (b.data.chapter ?? 0),
@@ -9,9 +10,9 @@ const chapters = (await getPublicEntries('Novels')).sort(
 ---
 
 <Layout title="小说目录">
-  <section>
+  <Card as="section" class="novel-directory">
     <h2>小说章节</h2>
-    <ol>
+    <ol class="novel-directory__list">
       {
         chapters.map((chapter) => (
           <li>
@@ -20,5 +21,5 @@ const chapters = (await getPublicEntries('Novels')).sort(
         ))
       }
     </ol>
-  </section>
+  </Card>
 </Layout>

@@ -23,7 +23,12 @@ export async function getPublicEntries<C extends CollectionName>(
   collection: C,
   options: PublicEntryOptions = {},
 ): Promise<CollectionEntry<C>[]> {
-  const { limit, sortBy = 'pubDate', direction = 'desc', includeDrafts = false } = options;
+  const {
+    limit,
+    sortBy = 'pubDate',
+    direction = 'desc',
+    includeDrafts = false,
+  } = options;
 
   try {
     // 1. 获取集合的原始数据
@@ -51,7 +56,10 @@ export async function getPublicEntries<C extends CollectionName>(
       if (sortBy === 'title') {
         const titleA = a.data.title ?? a.slug;
         const titleB = b.data.title ?? b.slug;
-        return (collator?.compare(titleA, titleB) ?? titleA.localeCompare(titleB)) * directionFactor;
+        return (
+          (collator?.compare(titleA, titleB) ?? titleA.localeCompare(titleB)) *
+          directionFactor
+        );
       }
 
       const valueA = a.data.pubDate?.valueOf();
@@ -72,8 +80,11 @@ export async function getPublicEntries<C extends CollectionName>(
     }
 
     // 3. 限制数量
-    const normalizedLimit = typeof limit === 'number' && limit > 0 ? Math.floor(limit) : undefined;
-    return normalizedLimit ? visibleEntries.slice(0, normalizedLimit) : visibleEntries;
+    const normalizedLimit =
+      typeof limit === 'number' && limit > 0 ? Math.floor(limit) : undefined;
+    return normalizedLimit
+      ? visibleEntries.slice(0, normalizedLimit)
+      : visibleEntries;
   } catch (error) {
     console.error(`Failed to fetch collection "${collection}":`, error);
     // 返回空数组而不是让应用崩溃

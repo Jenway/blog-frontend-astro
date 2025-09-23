@@ -1,6 +1,7 @@
 ---
 import { getPublicEntries } from '../utils/content';
 import Layout from '../layouts/Layout.astro';
+import Card from '../components/ui/Card.astro';
 
 // 获取 'treeholes' 集合并排序
 const holes = (await getPublicEntries('TreeHoles')).sort(
@@ -11,29 +12,19 @@ const holes = (await getPublicEntries('TreeHoles')).sort(
 <Layout title="树洞回响">
   <h1>时间流</h1>
   <p>一些不连贯的片段。</p>
-  <div>
+  <div class="timeline">
     {
       holes.map(async (hole) => {
         const { Content } = await hole.render();
         return (
-          <article class="hole">
-            <small>{hole.data.pubDate.toLocaleDateString()}</small>
+          <Card as="article" class="timeline__item">
+            <small class="text-muted text-sm">
+              {hole.data.pubDate.toLocaleDateString()}
+            </small>
             <Content />
-          </article>
+          </Card>
         );
       })
     }
   </div>
 </Layout>
-
-<style>
-  .hole {
-    border-left: 2px solid var(--pico-muted-border-color);
-    padding-left: 1rem;
-    margin-bottom: 2rem;
-  }
-  .hole > :global(p) {
-    /* 针对渲染出的 markdown 内容 */
-    margin-top: 0.5rem;
-  }
-</style>

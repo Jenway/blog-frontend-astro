@@ -3,7 +3,9 @@ export function getPaginationBasePath(pathname: string): string {
   return normalized.endsWith('/') ? normalized : `${normalized}/`;
 }
 
-export function createPaginationLinkBuilder(pathname: string): (pageNumber: number) => string {
+export function createPaginationLinkBuilder(
+  pathname: string,
+): (pageNumber: number) => string {
   const basePath = getPaginationBasePath(pathname);
 
   return (pageNumber: number) =>

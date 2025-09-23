@@ -1,0 +1,455 @@
+/* Component Styles - 可复用组件样式 */
+
+/* Button 组件样式 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 0.6rem 1.4rem;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition-fast);
+  cursor: pointer;
+  border: none;
+  font-size: inherit;
+}
+
+.btn--primary {
+  background: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-secondary)
+  );
+  color: var(--color-white);
+}
+
+.btn--primary:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-xl);
+}
+
+.btn--secondary {
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  box-shadow: inset 0 0 0 1px var(--color-primary-border);
+}
+
+.btn--secondary:hover {
+  box-shadow: inset 0 0 0 1px rgba(99, 102, 241, 0.35);
+}
+
+.btn--outline {
+  background: transparent;
+  color: inherit;
+  border: var(--border-muted);
+}
+
+.btn--outline:hover {
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+}
+
+.btn--sm {
+  padding: var(--space-xs) var(--space-md);
+  font-size: var(--font-base);
+}
+
+.btn--disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Card 组件样式 */
+.card {
+  background: var(--surface-primary);
+  border-radius: var(--radius-2xl);
+  padding: clamp(1.75rem, 3.5vw, 3rem);
+  border: var(--border-medium);
+  box-shadow: var(--shadow-md);
+  display: grid;
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+}
+
+.card--interactive {
+  transition: var(--transition-fast);
+}
+
+.card--interactive:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-hover);
+}
+
+.card--sidebar {
+  background: var(--surface-muted);
+  border-radius: var(--radius-xl);
+  border: var(--border-light);
+  box-shadow: var(--shadow-sm);
+}
+
+.card--archive {
+  display: grid;
+  gap: var(--space-xs);
+  padding: var(--space-lg) var(--space-xl);
+  border-radius: var(--radius-md);
+  border: var(--border-medium);
+  background: var(--surface-muted);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-fast);
+}
+
+.card--archive:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Tag 组件样式 */
+.tag {
+  font-size: var(--font-xs);
+  font-weight: bold;
+  padding: 0.2rem var(--space-sm);
+  border-radius: var(--radius-full);
+  color: var(--pico-primary-inverse);
+  justify-self: start;
+}
+
+.tag--post {
+  background-color: var(--pico-primary);
+}
+
+.tag--tweet {
+  background-color: var(--pico-secondary);
+}
+
+/* Grid 布局组件 */
+.grid {
+  display: grid;
+  gap: var(--layout-gap);
+}
+
+.grid--2-cols {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 768px) {
+  .grid--2-cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* List 组件样式 */
+.list--unstyled {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.list--spaced {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.list--spaced-lg {
+  display: grid;
+  gap: clamp(var(--space-lg), 2.5vw, var(--space-2xl));
+}
+
+/* Latest activity */
+.latest-activity {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.latest-activity__list {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.latest-activity__card {
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: clamp(1rem, 3vw, 1.75rem);
+  text-decoration: none;
+  color: inherit;
+  background: var(--surface-muted);
+  border: var(--border-medium);
+  box-shadow: var(--shadow-sm);
+  padding: clamp(1.25rem, 3vw, 1.85rem);
+}
+
+.latest-activity__title {
+  color: var(--pico-color);
+  font-weight: 500;
+}
+
+/* Archive listing */
+.archive {
+  display: grid;
+  gap: var(--space-responsive-2xl);
+}
+
+.archive__header {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.archive__header h2 {
+  margin: 0;
+}
+
+.archive__header small {
+  font-size: inherit;
+  color: var(--pico-muted-color);
+  font-weight: 500;
+}
+
+.archive__title {
+  margin: 0;
+  font-size: var(--font-3xl);
+}
+
+.archive__link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.archive__link:hover {
+  color: var(--color-primary-dark);
+}
+
+/* Pagination component */
+.pagination {
+  margin-block: var(--space-responsive-xl);
+  display: grid;
+  gap: var(--space-md);
+}
+
+.pagination__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
+}
+
+.pagination__nav {
+  display: flex;
+}
+
+.pagination__pages {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.pagination__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.25rem;
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-full);
+  border: var(--border-muted);
+  color: inherit;
+  text-decoration: none;
+  background: var(--surface-primary);
+  transition: var(--transition-fast);
+  font-size: var(--font-lg);
+}
+
+.pagination__link:hover {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary-dark);
+}
+
+.pagination__link--active {
+  background: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-secondary)
+  );
+  border-color: transparent;
+  color: var(--color-white);
+  font-weight: 600;
+  cursor: default;
+}
+
+.pagination__status {
+  flex: 1;
+}
+
+@media (max-width: 640px) {
+  .pagination__controls {
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .pagination__nav {
+    width: 100%;
+    justify-content: center;
+    order: 2;
+  }
+
+  .pagination__pages {
+    width: 100%;
+    order: 1;
+  }
+}
+.hero {
+  display: grid;
+  gap: var(--space-responsive-md);
+  margin-bottom: 0;
+}
+
+.hero__title {
+  font-size: clamp(2.5rem, 6vw, 3.4rem);
+  margin: 0;
+  line-height: 1.12;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  align-items: center;
+}
+
+.section-header {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.latest {
+  gap: var(--space-lg);
+}
+
+.highlight-card ul,
+.sidebar-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: inherit;
+}
+
+.highlight-card li,
+.sidebar-list li {
+  margin-bottom: var(--space-sm);
+}
+
+.about {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.sidebar-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-weight: 600;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.sidebar-link:hover {
+  color: var(--color-primary-dark);
+}
+
+/* Tweet feed */
+.tweet-stream {
+  display: grid;
+  gap: var(--space-responsive-2xl);
+}
+
+.tweet {
+  gap: var(--space-sm);
+  border-inline-start: 3px solid var(--color-primary-light);
+  box-shadow: var(--shadow-sm);
+  padding: clamp(1.25rem, 3vw, 1.85rem);
+}
+
+.tweet time {
+  font-size: var(--font-base);
+  color: var(--pico-muted-color);
+}
+
+.tweet__content {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.tweet-controls {
+  margin-top: var(--space-responsive-2xl);
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.tweet__load-more {
+  justify-self: start;
+}
+
+.tweet__status {
+  min-height: 1.2em;
+}
+
+/* Timeline */
+.timeline {
+  display: grid;
+  gap: var(--space-responsive-2xl);
+}
+
+.timeline__item {
+  display: grid;
+  gap: var(--space-sm);
+  border-inline-start: 3px solid var(--color-primary-light);
+  box-shadow: var(--shadow-sm);
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+.timeline__item p {
+  margin-top: var(--space-sm);
+}
+
+/* Novel directory */
+.novel-directory {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.novel-directory__list {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.novel-directory__list a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.novel-directory__list a:hover {
+  color: var(--color-primary-dark);
+}
+
+/* Longform content */
+.prose-card {
+  display: grid;
+  gap: var(--space-responsive-xl);
+  line-height: 1.8;
+}
+
+.prose-card__header {
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.prose-card__header h1 {
+  margin: 0;
+}
+
+.prose-card > * + * {
+  margin-top: var(--space-md);
+}
+
+.prose-card :is(ul, ol) {
+  padding-left: 1.25rem;
+}

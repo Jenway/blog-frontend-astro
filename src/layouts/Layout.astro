@@ -1,6 +1,14 @@
 ---
 // src/layouts/Layout.astro
 import ClientRouter from 'astro/components/ClientRouter.astro';
+import '../styles/tokens.css';
+import '../styles/base.css';
+import '../styles/components.css';
+import '../styles/utilities.css';
+
+const { title = '数字花园' } = Astro.props;
+const hasSidebar = Astro.slots.has('sidebar');
+const currentYear = new Date().getFullYear();
 ---
 
 <!doctype html>
@@ -8,97 +16,62 @@ import ClientRouter from 'astro/components/ClientRouter.astro';
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>{Astro.props.title || '数字花园'}</title>
+    <title>{title}</title>
 
     <!-- 引入 Pico.css -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
     />
-
-    <style>
-      /* 一些微调，增加简洁感 */
-      :root {
-        --pico-font-size: 100%;
-        --pico-line-height: 1.6;
-        --pico-container-spacing-horizontal: 2rem;
-      }
-      body {
-        padding: 2rem 0;
-      }
-      main {
-        width: 100%;
-        max-width: 80ch; /* 最佳阅读宽度 */
-        margin: 0 auto;
-      }
-      nav {
-        margin-bottom: 2rem;
-      }
-      .pagination {
-        margin-block: 2rem;
-        display: grid;
-        gap: 0.75rem;
-      }
-      .pagination__controls {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1rem;
-      }
-      .pagination__pages {
-        display: flex;
-        gap: 0.5rem;
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-      .pagination__link {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 2.5rem;
-        padding: 0.35rem 0.75rem;
-        border-radius: 999px;
-        border: 1px solid var(--pico-color-muted-border, rgba(120, 120, 120, 0.3));
-        color: inherit;
-        text-decoration: none;
-        transition: background-color 0.2s ease, color 0.2s ease;
-      }
-      .pagination__link:hover {
-        background-color: var(--pico-color-contrast-low, rgba(0, 0, 0, 0.06));
-      }
-      .pagination__link.is-active {
-        background-color: var(--pico-color-primary, #3f51b5);
-        border-color: var(--pico-color-primary, #3f51b5);
-        color: var(--pico-color-white, #fff);
-        cursor: default;
-      }
-      .pagination__link.is-disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-      }
-      .pagination__status {
-        flex: 1;
-        text-align: center;
-        font-size: 0.9rem;
-        color: var(--pico-color-muted);
-      }
-    </style>
   </head>
   <body>
     <ClientRouter />
-    <main class="container">
-      <nav>
-        <ul>
-          <li><a href="/"><strong>主页</strong></a></li>
-        </ul>
-        <ul>
-          <li><a href="/posts/">文章</a></li>
-          <li><a href="/tweets/">片段</a></li>
-        </ul>
-      </nav>
+    <div class="page-wrapper">
+      <header class="site-header">
+        <div class="site-header__inner container">
+          <a class="brand" href="/">
+            <span class="brand__badge">J</span>
+            <span>Jenway 的数字花园</span>
+          </a>
+          <nav class="site-nav" aria-label="主导航">
+            <a href="/">主页</a>
+            <a href="/posts/">文章</a>
+            <a href="/tweets/">片段</a>
+            <a href="/novels/">小说</a>
+          </nav>
+        </div>
+      </header>
 
-      <slot />
-    </main>
+      <main
+        class="site-main container"
+        data-has-sidebar={hasSidebar ? 'true' : 'false'}
+      >
+        <article class="site-content">
+          <slot />
+        </article>
+        {
+          hasSidebar && (
+            <aside class="site-sidebar">
+              <slot name="sidebar" />
+            </aside>
+          )
+        }
+      </main>
+
+      <footer class="site-footer">
+        <div class="site-footer__inner container">
+          <span class="muted"
+            >© {currentYear} Jenway. 保留一切保留不了的权利。</span
+          >
+          <div class="footer-links">
+            <a href="mailto:mail@jenway.link">mail@jenway.link</a>
+            <a href="https://hexo.jenway.link" rel="noopener" target="_blank"
+              >旧站存档</a
+            >
+            <a href="/tweets/">片段流</a>
+          </div>
+        </div>
+      </footer>
+    </div>
   </body>
 </html>
