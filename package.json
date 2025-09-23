@@ -3,6 +3,9 @@
   "type": "module",
   "version": "0.0.1",
   "private": true,
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "fetch:content:ssh": "git clone --depth 1 git@github.com:Jenway/blog_content.git ./src/content",
     "fetch:content:https": "git clone --depth 1 https://${GH_TOKEN}@github.com/Jenway/blog_content.git ./src/content",
@@ -14,9 +17,10 @@
     "astro": "astro",
     "clean:content": "rimraf ./src/content",
     "format": "prettier --write . --plugin=prettier-plugin-astro",
+    "format:check": "prettier --check . --plugin=prettier-plugin-astro",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "check": "pnpm format && pnpm lint && pnpm typecheck"
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck"
   },
   "dependencies": {
     "astro": "^5.12.9"
@@ -32,6 +36,7 @@
     "globals": "^16.3.0",
     "prettier": "^3.3.2",
     "prettier-plugin-astro": "^0.14.0",
-    "rimraf": "^6.0.0"
+    "rimraf": "^6.0.0",
+    "typescript": "^5.9.2"
   }
 }

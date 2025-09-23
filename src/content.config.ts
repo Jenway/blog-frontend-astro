@@ -26,10 +26,11 @@ const flexibleSchema = z
 
     // 如果两个日期字段都找不到
     if (!finalDate) {
-      // 添加一个非致命的警告
+      // 添加一个非致命的警告，包含更详细的路径信息
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: `Missing 'pubDate' or 'date' in file. Using current date as fallback.`,
+        message: `Missing 'pubDate' or 'date' in ${ctx.path.join('/')}. Using current date as fallback.`,
+        path: ['pubDate'],
       });
       // 返回一个带有备用日期的数据对象
       return { ...data, pubDate: new Date() };

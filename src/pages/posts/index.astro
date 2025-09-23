@@ -1,20 +1,6 @@
 ---
 // src/pages/posts/index.astro
-import { getPublicEntries } from '../../utils/content';
-import Layout from '../../layouts/Layout.astro';
-
-const posts = await getPublicEntries('Posts');
+import PostsPagination from '../../components/PostsPagination.astro';
 ---
 
-<Layout title="文章目录">
-  <h2>所有文章</h2>
-  <ul>
-    {
-      posts.map((post) => (
-        <li>
-          <a href={`/posts/${post.slug}/`}>{post.data.title}</a>
-        </li>
-      ))
-    }
-  </ul>
-</Layout>
+<PostsPagination currentPage={1} />

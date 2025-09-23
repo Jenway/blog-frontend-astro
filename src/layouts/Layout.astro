@@ -1,5 +1,6 @@
 ---
 // src/layouts/Layout.astro
+import ClientRouter from 'astro/components/ClientRouter.astro';
 ---
 
 <!doctype html>
@@ -33,17 +34,67 @@
       nav {
         margin-bottom: 2rem;
       }
+      .pagination {
+        margin-block: 2rem;
+        display: grid;
+        gap: 0.75rem;
+      }
+      .pagination__controls {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .pagination__pages {
+        display: flex;
+        gap: 0.5rem;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .pagination__link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 2.5rem;
+        padding: 0.35rem 0.75rem;
+        border-radius: 999px;
+        border: 1px solid var(--pico-color-muted-border, rgba(120, 120, 120, 0.3));
+        color: inherit;
+        text-decoration: none;
+        transition: background-color 0.2s ease, color 0.2s ease;
+      }
+      .pagination__link:hover {
+        background-color: var(--pico-color-contrast-low, rgba(0, 0, 0, 0.06));
+      }
+      .pagination__link.is-active {
+        background-color: var(--pico-color-primary, #3f51b5);
+        border-color: var(--pico-color-primary, #3f51b5);
+        color: var(--pico-color-white, #fff);
+        cursor: default;
+      }
+      .pagination__link.is-disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+      .pagination__status {
+        flex: 1;
+        text-align: center;
+        font-size: 0.9rem;
+        color: var(--pico-color-muted);
+      }
     </style>
   </head>
   <body>
+    <ClientRouter />
     <main class="container">
       <nav>
         <ul>
           <li><a href="/"><strong>主页</strong></a></li>
         </ul>
         <ul>
-          <li><a href="/posts">文章</a></li>
-          <li><a href="/tweets">片段</a></li>
+          <li><a href="/posts/">文章</a></li>
+          <li><a href="/tweets/">片段</a></li>
         </ul>
       </nav>
 

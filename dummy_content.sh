@@ -35,4 +35,4 @@ pubDate: 2025-01-01
 
 # 验证并显示最终的结构
 echo "✅ Dummy content generated successfully."
-exa ./src -T --git-ignore
+find ./src -maxdepth 2 -print

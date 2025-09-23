@@ -4,7 +4,7 @@ import { getPublicEntries } from '../../utils/content';
 import Layout from '../../layouts/Layout.astro';
 
 const chapters = (await getPublicEntries('Novels')).sort(
-  (a, b) => a.data.chapter - b.data.chapter,
+  (a, b) => (a.data.chapter ?? 0) - (b.data.chapter ?? 0),
 );
 ---
 

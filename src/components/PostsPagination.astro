@@ -1,0 +1,107 @@
+---
+// src/components/PostsPagination.astro
+import { getPublicEntries } from '../utils/content';
+import Layout from '../layouts/Layout.astro';
+import { createPaginationLinkBuilder, getPageNumbers } from '../utils/pagination';
+
+interface Props {
+  currentPage: number;
+}
+
+const { currentPage } = Astro.props;
+
+const posts = await getPublicEntries('Posts');
+const postsPerPage = 10;
+const totalPages = Math.ceil(posts.length / postsPerPage);
+const startIndex = (currentPage - 1) * postsPerPage;
+const endIndex = startIndex + postsPerPage;
+const paginatedPosts = posts.slice(startIndex, endIndex);
+
+const buildPageLink = createPaginationLinkBuilder('/posts/');
+const pageNumbers = getPageNumbers(totalPages);
+
+const pageTitle = currentPage === 1 ? "文章目录" : `文章目录 - 第 ${currentPage} 页`;
+const pageHeading = currentPage === 1 ? "所有文章" : `所有文章 <small>第 ${currentPage} 页</small>`;
+---
+
+<Layout title={pageTitle}>
+  <h2 set:html={pageHeading}></h2>
+  <ul>
+    {
+      paginatedPosts.map((post) => (
+        <li>
+          <a href={`/posts/${post.slug}/`}>{post.data.title}</a>
+        </li>
+      ))
+    }
+  </ul>
+
+  {totalPages > 1 && (
+    <nav aria-label="文章分页">
+      <ul class="pagination">
+        <li>
+          {currentPage > 1 ? (
+            <a href={buildPageLink(currentPage - 1)} rel="prev">← 上一页</a>
+          ) : (
+            <span class="disabled">← 上一页</span>
+          )}
+        </li>
+
+        {pageNumbers.map((pageNum) => (
+          <li>
+            {pageNum === currentPage ? (
+              <span aria-current="page">{pageNum}</span>
+            ) : (
+              <a href={buildPageLink(pageNum)}>{pageNum}</a>
+            )}
+          </li>
+        ))}
+
+        <li>
+          {currentPage < totalPages ? (
+            <a href={buildPageLink(currentPage + 1)} rel="next">下一页 →</a>
+          ) : (
+            <span class="disabled">下一页 →</span>
+          )}
+        </li>
+      </ul>
+    </nav>
+  )}
+</Layout>
+
+<style>
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  .pagination li a,
+  .pagination li span {
+    display: block;
+    padding: 0.5rem 0.75rem;
+    text-decoration: none;
+    border: 1px solid var(--pico-border-color);
+    border-radius: 0.25rem;
+  }
+
+  .pagination li a:hover {
+    background-color: var(--pico-background-color);
+  }
+
+  .pagination li span[aria-current="page"] {
+    background-color: var(--pico-primary);
+    color: var(--pico-primary-inverse);
+    border-color: var(--pico-primary);
+  }
+
+  .pagination li span.disabled {
+    color: var(--pico-muted-color);
+    border-color: var(--pico-muted-border-color);
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+</style>

@@ -56,7 +56,7 @@ export default defineConfig({
 
   // 如果你用 SSR 渲染，可以设置 server 相关
   server: {
-    port: 3000,
+    port: 4321,
     open: true, // 启动后自动打开浏览器
   },
 
