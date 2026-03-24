@@ -1,0 +1,118 @@
+[site]
+default_title = "数字花园"
+default_description = "Jenway 的文章、片段与小说草稿，正在被整理成一座可漫步的数字花园。"
+brand_title = "Jenway 的数字花园"
+brand_tagline = "那一年，你正年轻"
+author_name = "Jenway"
+footer_note = "把零散文本慢慢整理成可重访的路径。"
+contact_email = "mail@jenway.link"
+legacy_url = "https://hexo.jenway.link"
+legacy_label = "旧站存档"
+tweets_label = "片段流"
+
+[[site.nav]]
+href = "/"
+label = "主页"
+
+[[site.nav]]
+href = "/posts/"
+label = "文章"
+
+[[site.nav]]
+href = "/tweets/"
+label = "片段"
+
+[[site.nav]]
+href = "/novels/"
+label = "小说"
+
+[[site.nav]]
+href = "/treeholes/"
+label = "树洞"
+
+[home.page]
+title = "Jenway 的数字花园"
+description = "一个持续生长的个人写作站点，收纳文章、片段、树洞和小说章节。"
+
+[home.masthead]
+kicker = "Digital Garden / Broadcast 01"
+title = "你好，世界。"
+subhead = "『又一个随处可见的博客』"
+
+[home.hitokoto]
+fallback_text = "把零散的句子先留在这里，等它们自己长成下一条路。"
+fallback_source = "首页配置"
+
+[[home.facts]]
+label = "Base"
+value = "青岛 / Internet"
+
+[[home.facts]]
+label = "Status"
+value = "绝赞求职中"
+
+[[home.facts]]
+label = "Format"
+value = "Essay / Fragment / Novel"
+
+[[home.routes]]
+href = "/tweets/"
+index = "01"
+title = "片段"
+description = "即时、轻量，但值得保留。"
+arrow = "进入"
+variant = "compact"
+
+[[home.routes]]
+href = "/novels/"
+index = "02"
+title = "小说"
+description = "旧日的梦"
+arrow = "进入"
+variant = "wide"
+
+[home.visual]
+caption = "Field Notes / Open Layout"
+
+[[home.utilities]]
+href = "/treeholes/"
+index = "04"
+title = "树洞"
+description = "更零散、更私人的记录。"
+arrow = "进入"
+new_tab = false
+
+[[home.utilities]]
+href = "mailto:mail@jenway.link"
+index = "05"
+title = "联系"
+description = "来信、交换想法。"
+arrow = "mail"
+new_tab = false
+
+[[home.utilities]]
+href = "https://hexo.jenway.link"
+index = "06"
+title = "旧站"
+description = "不是二次元。"
+arrow = "visit"
+new_tab = true
+
+[home.latest_activity]
+eyebrow = "Latest Activity"
+title = "最近文章"
+cta_label = "进入文章目录"
+
+[home.current_focus]
+eyebrow = "Current Focus"
+title = "编辑重点"
+items = [
+  "压实文章页的长文版式、引用和脚注。",
+  "继续清理旧站迁移痕迹与内容集合定义。",
+  "把小说目录与片段归档做得更易检索。",
+]
+
+[home.about]
+eyebrow = "About"
+title = "关于 Jenway"
+body = "CS 专业"

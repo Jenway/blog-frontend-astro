@@ -1,0 +1,42 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getPublicEntries } from '../../utils/content';
+import { buildTagHref, collectPostTags } from '../../utils/tags';
+
+const posts = await getPublicEntries('Posts');
+const tags = collectPostTags(posts);
+---
+
+<Layout
+  title="文章标签"
+  description="按标签整理的文章索引，用来按主题回看过去的写作。"
+>
+  <section class="archive tags-index">
+    <header class="archive__header">
+      <span class="eyebrow">Tags</span>
+      <h1>文章标签</h1>
+      <p class="text-muted">
+        不是完整分类学，只是一些用来回看文章主题的临时索引。
+      </p>
+      <div class="archive__meta">
+        <span>{tags.length} 个标签</span>
+        <span>{posts.length} 篇文章</span>
+      </div>
+    </header>
+
+    <div class="tags-cloud" role="list">
+      {
+        tags.map((tag) => (
+          <a
+            class="tags-cloud__item"
+            href={buildTagHref(tag.label)}
+            role="listitem"
+          >
+            <strong>{tag.label}</strong>
+            <span>{tag.count}</span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</Layout>

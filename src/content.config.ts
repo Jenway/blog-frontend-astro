@@ -7,8 +7,11 @@ const flexibleSchema = z
     title: z.string().optional(),
     description: z.string().optional(),
     chapter: z.number().optional(),
-    pubDate: z.date().optional(),
-    date: z.date().optional(),
+    pubDate: z.coerce.date().optional(),
+    date: z.coerce.date().optional(),
+    updatedDate: z.coerce.date().optional(),
+    author: z.string().optional(),
+    license: z.string().optional(),
     hidden: z.boolean().optional(),
     // --- 兼容 null 的 tags 字段 ---
     tags: z
@@ -21,22 +24,13 @@ const flexibleSchema = z
         return []; // 对于 null 或 undefined，返回空数组
       }),
   })
-  .transform((data, ctx) => {
+  .transform((data) => {
     const finalDate = data.pubDate || data.date;
 
-    // 如果两个日期字段都找不到
     if (!finalDate) {
-      // 添加一个非致命的警告，包含更详细的路径信息
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: `Missing 'pubDate' or 'date' in ${ctx.path.join('/')}. Using current date as fallback.`,
-        path: ['pubDate'],
-      });
-      // 返回一个带有备用日期的数据对象
       return { ...data, pubDate: new Date() };
     }
 
-    // 如果找到了日期，就正常返回
     return { ...data, pubDate: finalDate };
   });
 
@@ -65,10 +59,28 @@ const tweetsCollection = defineCollection({
   schema: flexibleSchema,
 });
 
+const archiveCollection = defineCollection({
+  type: 'content',
+  schema: flexibleSchema,
+});
+
+const afterSearchCollection = defineCollection({
+  type: 'content',
+  schema: flexibleSchema,
+});
+
+const legacyBlogCollection = defineCollection({
+  type: 'content',
+  schema: flexibleSchema,
+});
+
 // 导出所有集合
 export const collections = {
   Posts: postsCollection,
   Novels: novelsCollection,
   TreeHoles: treeholesCollection,
   Tweets: tweetsCollection,
+  Archive: archiveCollection,
+  AfterSearch: afterSearchCollection,
+  blog: legacyBlogCollection,
 };

@@ -1,0 +1,55 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Card from '../../components/ui/Card.astro';
+import { getPublicEntries } from '../../utils/content';
+import { collectPostTags, filterPostsByTag } from '../../utils/tags';
+
+export async function getStaticPaths() {
+  const posts = await getPublicEntries('Posts');
+  const tags = collectPostTags(posts);
+
+  return tags.map((tag) => ({
+    params: { tag: tag.label },
+    props: { tag: tag.label },
+  }));
+}
+
+const { tag } = Astro.props as { tag: string };
+const posts = await getPublicEntries('Posts');
+const taggedPosts = filterPostsByTag(posts, tag);
+---
+
+<Layout title={`标签：${tag}`} description={`按标签“${tag}”整理的文章归档。`}>
+  <section class="archive tags-archive">
+    <header class="archive__header">
+      <span class="eyebrow">Tag Archive</span>
+      <h1>{tag}</h1>
+      <p class="text-muted">带有这个标签的文章会集中显示在这里。</p>
+      <div class="archive__meta">
+        <span>{taggedPosts.length} 篇文章</span>
+        <a href="/tags/">查看全部标签</a>
+      </div>
+    </header>
+
+    <ul class="list--unstyled list--spaced-lg">
+      {
+        taggedPosts.map((post) => (
+          <li>
+            <Card variant="archive">
+              <h3 class="archive__title">
+                <a href={`/posts/${post.slug}/`} class="archive__link">
+                  {post.data.title}
+                </a>
+              </h3>
+              <div class="archive__meta">
+                <time datetime={post.data.pubDate.toISOString()}>
+                  {post.data.pubDate.toLocaleDateString('zh-CN')}
+                </time>
+              </div>
+            </Card>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</Layout>

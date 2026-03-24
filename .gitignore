@@ -12,6 +12,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+astro-dev.log
+astro-dev.err
 
 # environment variables
 .env
@@ -22,4 +24,7 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+.chrome-debug/
+.claude/
+desktop.ini
 src/content
