@@ -1,4 +1,9 @@
 ---
+import {
+  createPaginationLinkBuilder,
+  getPageNumbers,
+} from '../../utils/pagination';
+
 interface Props {
   currentPage: number;
   totalPages: number;
@@ -15,15 +20,11 @@ const {
   class: className = '',
 } = Astro.props;
 
+const buildPageHref = createPaginationLinkBuilder(baseUrl);
 const buildPageLink = (pageNumber: number) => {
-  const url = pageNumber === 1 ? baseUrl : `${baseUrl}${pageNumber}/`;
+  const url = buildPageHref(pageNumber);
   return anchorId ? `${url}#${anchorId}` : url;
 };
-
-const getPageNumbers = (total: number): number[] => {
-  return Array.from({ length: Math.max(0, total) }, (_, index) => index + 1);
-};
-
 const pageNumbers = getPageNumbers(totalPages);
 const hasPagination = totalPages > 1;
 ---

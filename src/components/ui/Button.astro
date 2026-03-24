@@ -1,13 +1,20 @@
 ---
-interface Props {
+interface BaseProps {
   variant?: 'primary' | 'secondary' | 'outline';
   size?: 'default' | 'sm';
   disabled?: boolean;
-  href?: string;
-  type?: 'button' | 'submit' | 'reset';
   class?: string;
-  [key: string]: any;
 }
+
+type LinkProps = BaseProps & {
+  href: string;
+  type?: never;
+};
+
+type ButtonProps = BaseProps & {
+  href?: undefined;
+  type?: 'button' | 'submit' | 'reset';
+};
 
 const {
   variant = 'primary',
@@ -17,38 +24,43 @@ const {
   type = 'button',
   class: className = '',
   ...props
-} = Astro.props;
+} = Astro.props as LinkProps | ButtonProps;
 
-const baseClasses = 'btn';
 const variantClasses = {
   primary: 'btn--primary',
   secondary: 'btn--secondary',
   outline: 'btn--outline',
 };
+
 const sizeClasses = {
   default: '',
   sm: 'btn--sm',
 };
 
 const classes = [
-  baseClasses,
+  'btn',
   variantClasses[variant],
   sizeClasses[size],
-  disabled && 'btn--disabled',
+  disabled ? 'btn--disabled' : '',
   className,
 ]
-  .filter(Boolean)
+  .filter((value): value is string => value.length > 0)
   .join(' ');
-
-const Component = href ? 'a' : 'button';
 ---
 
-<Component
-  class={classes}
-  href={href}
-  type={!href ? type : undefined}
-  disabled={disabled}
-  {...props}
->
-  <slot />
-</Component>
+{
+  href ? (
+    <a
+      class={classes}
+      href={disabled ? undefined : href}
+      aria-disabled={disabled ? 'true' : undefined}
+      {...props}
+    >
+      <slot />
+    </a>
+  ) : (
+    <button class={classes} type={type} disabled={disabled} {...props}>
+      <slot />
+    </button>
+  )
+}

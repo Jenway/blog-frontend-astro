@@ -1,10 +1,9 @@
 ---
 interface Props {
   variant?: 'default' | 'interactive' | 'sidebar' | 'archive';
-  as?: 'div' | 'section' | 'article' | 'a';
+  as?: 'div' | 'section' | 'article';
   href?: string;
   class?: string;
-  [key: string]: any;
 }
 
 const {
@@ -15,7 +14,6 @@ const {
   ...props
 } = Astro.props as Props;
 
-const baseClasses = 'card';
 const variantClasses = {
   default: '',
   interactive: 'card--interactive',
@@ -23,12 +21,11 @@ const variantClasses = {
   archive: 'card--archive',
 };
 
-const classes = [baseClasses, variantClasses[variant], className]
-  .filter(Boolean)
+const classes = ['card', variantClasses[variant], className]
+  .filter((value): value is string => value.length > 0)
   .join(' ');
 
-const componentTag = href ? 'a' : as;
-const Component = componentTag;
+const Component = href ? 'a' : as;
 ---
 
 <Component class={classes} href={href} {...props}>

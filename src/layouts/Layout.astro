@@ -1,52 +1,183 @@
 ---
-// src/layouts/Layout.astro
-import ClientRouter from 'astro/components/ClientRouter.astro';
+import { ClientRouter } from 'astro:transitions';
+import ThemeToggle from '../components/ui/ThemeToggle.astro';
+import codeCopyScript from '../scripts/code-copy.js?raw';
+import headerContextScript from '../scripts/header-context.js?raw';
+import postsNavigationScript from '../scripts/posts-navigation.js?raw';
+import readingRailScript from '../scripts/reading-rail.js?raw';
+import themeControllerScript from '../scripts/theme-controller.js?raw';
+import tweetNoteToggleScript from '../scripts/tweet-note-toggle.js?raw';
+import { siteCopy } from '../utils/site-copy';
+import 'katex/dist/katex.min.css';
 import '../styles/tokens.css';
 import '../styles/base.css';
 import '../styles/components.css';
 import '../styles/utilities.css';
 
-const { title = '数字花园' } = Astro.props;
+interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  image?: string;
+  noindex?: boolean;
+  type?: 'website' | 'article';
+  author?: string;
+  keywords?: string[];
+  publishedTime?: Date;
+  modifiedTime?: Date;
+  contentFrame?: 'framed' | 'bare';
+  contentWidth?: 'default' | 'wide';
+}
+
+const {
+  title = siteCopy.site.default_title,
+  description = siteCopy.site.default_description,
+  canonical,
+  image,
+  noindex = false,
+  type = 'website',
+  author = siteCopy.site.author_name,
+  keywords = [],
+  publishedTime,
+  modifiedTime,
+  contentFrame = 'framed',
+  contentWidth = 'default',
+} = Astro.props as Props;
+
 const hasSidebar = Astro.slots.has('sidebar');
 const currentYear = new Date().getFullYear();
+const pathname = Astro.url.pathname;
+const siteUrl = Astro.site ?? Astro.url;
+const canonicalUrl = new URL(canonical ?? pathname, siteUrl).toString();
+const rssUrl = new URL('/rss.xml', siteUrl).toString();
+const metadataTitle =
+  title === siteCopy.site.default_title ? siteCopy.site.brand_title : title;
+const documentTitle =
+  title === siteCopy.site.default_title
+    ? siteCopy.site.brand_title
+    : `${title} | ${siteCopy.site.brand_title}`;
+const metadataImage = image ? new URL(image, siteUrl).toString() : undefined;
+const robots = noindex ? 'noindex, nofollow' : 'index, follow';
+const metadataKeywords = keywords.filter((keyword) => keyword.length > 0);
+
+const navItems = siteCopy.site.nav;
+
+const isActive = (href: string) =>
+  href === '/' ? pathname === '/' : pathname.startsWith(href);
 ---
 
 <!doctype html>
-<html lang="zh-CN" data-theme="light">
+<html lang="zh-CN" data-theme="light" data-theme-mode="system">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>{title}</title>
-
-    <!-- 引入 Pico.css -->
+    <meta name="description" content={description} />
+    <meta name="author" content={author} />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="robots" content={robots} />
+    {
+      metadataKeywords.length > 0 && (
+        <meta name="keywords" content={metadataKeywords.join(', ')} />
+      )
+    }
+    <link rel="canonical" href={canonicalUrl} />
     <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+      rel="alternate"
+      type="application/rss+xml"
+      title={`${siteCopy.site.brand_title} RSS`}
+      href={rssUrl}
     />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:site_name" content={siteCopy.site.brand_title} />
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={metadataTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    {metadataImage && <meta property="og:image" content={metadataImage} />}
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={metadataTitle} />
+    <meta name="twitter:description" content={description} />
+    {metadataImage && <meta name="twitter:image" content={metadataImage} />}
+    {
+      type === 'article' && publishedTime && (
+        <meta
+          property="article:published_time"
+          content={publishedTime.toISOString()}
+        />
+      )
+    }
+    {
+      type === 'article' && modifiedTime && (
+        <meta
+          property="article:modified_time"
+          content={modifiedTime.toISOString()}
+        />
+      )
+    }
+    {type === 'article' && <meta property="article:author" content={author} />}
+    {
+      type === 'article' &&
+        metadataKeywords.map((keyword) => (
+          <meta property="article:tag" content={keyword} />
+        ))
+    }
+    <title>{documentTitle}</title>
+    <script is:inline set:html={codeCopyScript} />
+    <script is:inline set:html={headerContextScript} />
+    <script is:inline set:html={postsNavigationScript} />
+    <script is:inline set:html={readingRailScript} />
+    <script is:inline set:html={themeControllerScript} />
+    <script is:inline set:html={tweetNoteToggleScript} />
   </head>
   <body>
     <ClientRouter />
     <div class="page-wrapper">
       <header class="site-header">
         <div class="site-header__inner container">
-          <a class="brand" href="/">
+          <a class="brand" href="/" aria-label="返回首页">
             <span class="brand__badge">J</span>
-            <span>Jenway 的数字花园</span>
+            <span class="brand__copy">
+              <strong>{siteCopy.site.brand_title}</strong>
+              <small>{siteCopy.site.brand_tagline}</small>
+            </span>
           </a>
-          <nav class="site-nav" aria-label="主导航">
-            <a href="/">主页</a>
-            <a href="/posts/">文章</a>
-            <a href="/tweets/">片段</a>
-            <a href="/novels/">小说</a>
-          </nav>
+          <div class="site-header__context" aria-live="polite">
+            <span class="site-header__context-title" data-header-context-title
+            ></span>
+          </div>
+          <div class="site-header__actions">
+            <nav class="site-nav" aria-label="主导航">
+              {
+                navItems.map((item) => (
+                  <a
+                    href={item.href}
+                    class="site-nav__link"
+                    data-active={isActive(item.href) ? 'true' : 'false'}
+                  >
+                    {item.label}
+                  </a>
+                ))
+              }
+            </nav>
+            <ThemeToggle />
+          </div>
         </div>
+        <span class="site-header__reading-progress" aria-hidden="true">
+          <span
+            class="site-header__reading-progress-bar"
+            data-reading-progress-bar></span>
+        </span>
       </header>
 
       <main
         class="site-main container"
         data-has-sidebar={hasSidebar ? 'true' : 'false'}
       >
-        <article class="site-content">
+        <article
+          class="site-content"
+          data-content-frame={contentFrame}
+          data-content-width={contentWidth}
+        >
           <slot />
         </article>
         {
@@ -60,15 +191,18 @@ const currentYear = new Date().getFullYear();
 
       <footer class="site-footer">
         <div class="site-footer__inner container">
-          <span class="muted"
-            >© {currentYear} Jenway. 保留一切保留不了的权利。</span
-          >
+          <div class="footer-copy">
+            <span class="muted">© {currentYear} Jenway.</span>
+            <span class="muted">{siteCopy.site.footer_note}</span>
+          </div>
           <div class="footer-links">
-            <a href="mailto:mail@jenway.link">mail@jenway.link</a>
-            <a href="https://hexo.jenway.link" rel="noopener" target="_blank"
-              >旧站存档</a
-            >
-            <a href="/tweets/">片段流</a>
+            <a href={`mailto:${siteCopy.site.contact_email}`}>
+              {siteCopy.site.contact_email}
+            </a>
+            <a href={siteCopy.site.legacy_url} rel="noopener" target="_blank">
+              {siteCopy.site.legacy_label}
+            </a>
+            <a href="/tweets/">{siteCopy.site.tweets_label}</a>
           </div>
         </div>
       </footer>
