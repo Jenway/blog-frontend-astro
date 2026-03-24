@@ -1,0 +1,145 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Pagination from './ui/Pagination.astro';
+import { getPublicEntries } from '../utils/content';
+import { getPageSlice, getTotalPages } from '../utils/pagination';
+
+interface Props {
+  currentPage: number;
+}
+
+const { currentPage } = Astro.props as Props;
+
+const PAGE_SIZE = 10;
+const tweets = await getPublicEntries('Tweets');
+const totalPages = getTotalPages(tweets.length, PAGE_SIZE);
+const paginatedTweets = getPageSlice(tweets, currentPage, PAGE_SIZE);
+const anchorId = 'tweets-top';
+
+const renderedTweets = await Promise.all(
+  paginatedTweets.map(async (tweet, index) => {
+    const { Content } = await tweet.render();
+    const variantPattern = [
+      'lead',
+      'note',
+      'quote',
+      'wide',
+      'note',
+      'marker',
+      'quote',
+      'note',
+      'wide',
+      'marker',
+    ] as const;
+
+    return {
+      slug: tweet.slug,
+      pubDate: tweet.data.pubDate,
+      Content,
+      variant: variantPattern[index % variantPattern.length],
+    };
+  }),
+);
+
+const pageTitle =
+  currentPage === 1 ? '片段流' : `片段流 - 第 ${currentPage} 页`;
+---
+
+<Layout
+  title={pageTitle}
+  description="按时间整理的片段流，收纳尚未长成文章、但仍值得留下的句子与段落。"
+  contentFrame="bare"
+  contentWidth="wide"
+>
+  <section class="fragments-sheet" id={anchorId}>
+    <header class="fragments-sheet__header">
+      <div class="fragments-sheet__headline">
+        <span class="eyebrow">Fragments</span>
+        <h1>片段</h1>
+        <p class="text-muted">
+          这里放的是短笺、边注和一时记下的话。它们未必长成文章，但仍然保留着当时的语气。
+        </p>
+      </div>
+      <div class="fragments-sheet__meta">
+        <span>{tweets.length} 条片段</span>
+        {
+          totalPages > 1 && (
+            <span>
+              第 {currentPage} / {totalPages} 页
+            </span>
+          )
+        }
+      </div>
+    </header>
+
+    <section class="tweet-stream tweet-stream--notes">
+      {
+        renderedTweets.map(({ slug, pubDate, Content, variant }) => (
+          <article
+            class={`tweet-note tweet-note--${variant}`}
+            id={slug}
+            data-tweet-note
+            data-overflow="false"
+          >
+            <header class="tweet-note__meta">
+              <span class="tweet-note__eyebrow">Note</span>
+              <time datetime={pubDate?.toISOString()}>
+                {pubDate?.toLocaleDateString('zh-CN')}
+              </time>
+            </header>
+            <div
+              class="tweet-note__content"
+              id={`${slug}-content`}
+              data-tweet-note-content
+            >
+              <div class="tweet-note__body rich-content">
+                <Content />
+              </div>
+            </div>
+            <button
+              class="tweet-note__toggle"
+              type="button"
+              hidden
+              aria-haspopup="dialog"
+              data-tweet-note-toggle
+              data-tweet-note-date={pubDate?.toLocaleDateString('zh-CN')}
+            >
+              查看全文
+            </button>
+          </article>
+        ))
+      }
+    </section>
+  </section>
+
+  <dialog class="tweet-note-dialog" data-tweet-note-dialog>
+    <article class="tweet-note-dialog__sheet">
+      <header class="tweet-note-dialog__header">
+        <div class="tweet-note-dialog__meta">
+          <span class="tweet-note-dialog__eyebrow">Note</span>
+          <time data-tweet-note-dialog-date></time>
+        </div>
+        <button
+          class="tweet-note-dialog__close"
+          type="button"
+          aria-label="关闭片段全文"
+          data-tweet-note-dialog-close
+        >
+          关闭
+        </button>
+      </header>
+      <div
+        class="tweet-note-dialog__body rich-content"
+        data-tweet-note-dialog-body
+      >
+      </div>
+    </article>
+  </dialog>
+
+  <Pagination
+    currentPage={currentPage}
+    totalPages={totalPages}
+    baseUrl="/tweets/"
+    anchorId={anchorId}
+  />
+</Layout>

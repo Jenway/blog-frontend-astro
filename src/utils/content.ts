@@ -1,7 +1,6 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import type { collections as ContentCollections } from 'src/content.config';
 
-// 定义一个类型别名，代表所有可能的集合名称
 type CollectionName = keyof typeof ContentCollections;
 
 type SortField = 'pubDate' | 'title';
@@ -14,11 +13,6 @@ interface PublicEntryOptions {
   includeDrafts?: boolean;
 }
 
-/**
- * 获取所有公开的、已排序的内容条目。
- * @param collection - 要查询的集合名称 (e.g., 'Posts')
- * @param options - 排序、方向和数量限制等可选项
- */
 export async function getPublicEntries<C extends CollectionName>(
   collection: C,
   options: PublicEntryOptions = {},
@@ -29,9 +23,7 @@ export async function getPublicEntries<C extends CollectionName>(
     direction = 'desc',
     includeDrafts = false,
   } = options;
-
   try {
-    // 1. 获取集合的原始数据
     const entries = await getCollection(collection, ({ data }) => {
       return data.hidden !== true;
     });
@@ -51,7 +43,6 @@ export async function getPublicEntries<C extends CollectionName>(
         ? new Intl.Collator('zh-Hans', { numeric: true, sensitivity: 'base' })
         : null;
 
-    // 2. 排序
     visibleEntries.sort((a, b) => {
       if (sortBy === 'title') {
         const titleA = a.data.title ?? a.slug;
@@ -79,7 +70,6 @@ export async function getPublicEntries<C extends CollectionName>(
       );
     }
 
-    // 3. 限制数量
     const normalizedLimit =
       typeof limit === 'number' && limit > 0 ? Math.floor(limit) : undefined;
     return normalizedLimit
@@ -87,7 +77,6 @@ export async function getPublicEntries<C extends CollectionName>(
       : visibleEntries;
   } catch (error) {
     console.error(`Failed to fetch collection "${collection}":`, error);
-    // 返回空数组而不是让应用崩溃
     return [] as CollectionEntry<C>[];
   }
 }

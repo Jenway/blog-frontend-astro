@@ -7,24 +7,37 @@ import Card from '../components/ui/Card.astro';
 const holes = (await getPublicEntries('TreeHoles')).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
+
+const renderedHoles = await Promise.all(
+  holes.map(async (hole) => {
+    const { Content } = await hole.render();
+    return {
+      slug: hole.slug,
+      pubDate: hole.data.pubDate,
+      Content,
+    };
+  }),
+);
 ---
 
 <Layout title="树洞回响">
-  <h1>时间流</h1>
-  <p>一些不连贯的片段。</p>
-  <div class="timeline">
+  <section class="page-intro">
+    <span class="eyebrow">Echoes</span>
+    <h1>树洞回响</h1>
+    <p class="text-muted">一些不连贯、却仍然值得被保留的片段。</p>
+  </section>
+  <section class="timeline">
     {
-      holes.map(async (hole) => {
-        const { Content } = await hole.render();
-        return (
-          <Card as="article" class="timeline__item">
-            <small class="text-muted text-sm">
-              {hole.data.pubDate.toLocaleDateString()}
-            </small>
+      renderedHoles.map(({ slug, pubDate, Content }) => (
+        <Card as="article" class="timeline__item" id={slug}>
+          <small class="text-muted text-sm">
+            {pubDate.toLocaleDateString('zh-CN')}
+          </small>
+          <div>
             <Content />
-          </Card>
-        );
-      })
+          </div>
+        </Card>
+      ))
     }
-  </div>
+  </section>
 </Layout>

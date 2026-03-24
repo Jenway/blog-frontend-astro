@@ -1,0 +1,92 @@
+---
+interface Props {
+  fallbackText: string;
+  fallbackSource: string;
+}
+
+const { fallbackText, fallbackSource } = Astro.props as Props;
+---
+
+<hitokoto-quote
+  class="home-hitokoto"
+  data-hitokoto-root
+  data-endpoint="https://v1.hitokoto.cn/?c=i&c=k?encode=json&max_length=52"
+  data-fallback-text={fallbackText}
+  data-fallback-source={fallbackSource}
+>
+  <p class="home-hitokoto__text" data-hitokoto-text>
+    {fallbackText}
+  </p>
+  <p class="home-hitokoto__meta">
+    <span data-hitokoto-source>{fallbackSource}</span>
+    <span data-hitokoto-status>Fallback</span>
+  </p>
+</hitokoto-quote>
+
+<script>
+  class HitokotoQuoteElement extends HTMLElement {
+    connectedCallback() {
+      if (this.dataset.bound === 'true') return;
+      this.dataset.bound = 'true';
+      this.renderFallback();
+      void this.loadQuote();
+    }
+
+    renderFallback() {
+      this.updateContent(
+        this.dataset.fallbackText ?? '',
+        this.dataset.fallbackSource ?? '本地文案',
+        'Fallback',
+      );
+    }
+
+    updateContent(text, source, status) {
+      const textNode = this.querySelector('[data-hitokoto-text]');
+      const sourceNode = this.querySelector('[data-hitokoto-source]');
+      const statusNode = this.querySelector('[data-hitokoto-status]');
+
+      if (textNode) textNode.textContent = text;
+      if (sourceNode) sourceNode.textContent = source;
+      if (statusNode) statusNode.textContent = status;
+    }
+
+    async loadQuote() {
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(() => controller.abort(), 2600);
+
+      try {
+        const response = await fetch(
+          this.dataset.endpoint ?? 'https://v1.hitokoto.cn/?encode=json',
+          {
+            signal: controller.signal,
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error(`Hitokoto request failed: ${response.status}`);
+        }
+
+        const payload = await response.json();
+        const text = String(payload.hitokoto ?? '').trim();
+        const from = String(payload.from ?? '').trim();
+        const fromWho = String(payload.from_who ?? '').trim();
+        const source = [fromWho, from].filter(Boolean).join(' · ') || '一言';
+
+        if (!text) {
+          throw new Error('Hitokoto payload missing text');
+        }
+
+        this.updateContent(text, source, 'Live');
+      } catch (error) {
+        console.warn('Hitokoto unavailable, fallback applied.', error);
+        this.renderFallback();
+      } finally {
+        window.clearTimeout(timeoutId);
+      }
+    }
+  }
+
+  if (!customElements.get('hitokoto-quote')) {
+    customElements.define('hitokoto-quote', HitokotoQuoteElement);
+  }
+</script>

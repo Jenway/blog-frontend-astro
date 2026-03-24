@@ -1,0 +1,22 @@
+---
+import { getPublicEntries } from '../../utils/content';
+import TweetsPagination from '../../components/TweetsPagination.astro';
+import { getTotalPages } from '../../utils/pagination';
+
+export async function getStaticPaths() {
+  const pageSize = 10;
+  const tweets = await getPublicEntries('Tweets');
+  const totalPages = getTotalPages(tweets.length, pageSize);
+
+  return Array.from({ length: Math.max(0, totalPages - 1) }, (_, index) => ({
+    params: { page: String(index + 2) },
+    props: {
+      currentPage: index + 2,
+    },
+  }));
+}
+
+const { currentPage } = Astro.props;
+---
+
+<TweetsPagination currentPage={currentPage} />

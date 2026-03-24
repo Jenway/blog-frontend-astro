@@ -1,67 +1,63 @@
 ---
-// src/components/LatestActivity.astro
-import { getPublicEntries } from '../utils/content';
 import Card from './ui/Card.astro';
+import { getPublicEntries } from '../utils/content';
 
-// 1. **预先定义变量**
-// 我们将 recentActivity 初始化为一个空数组。
-// 这样即使后面的 try 块失败，这个变量也始终存在，不会导致 ReferenceError。
-let recentActivity = [];
+interface ActivityItem {
+  date: Date;
+  title: string;
+  url: string;
+}
+
+const dateFormatter = new Intl.DateTimeFormat('zh-CN', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+
+let recentActivity: ActivityItem[] = [];
 
 try {
-  // 2. 将所有可能出错的逻辑都放进 try...catch 块
-  const posts = await getPublicEntries('Posts');
-  const tweets = await getPublicEntries('Tweets');
+  const posts = await getPublicEntries('Posts', { limit: 5 });
 
-  const processedPosts = posts.map((post) => ({
-    type: '文章',
-    date: post.data.pubDate,
-    title: post.data.title,
-    url: `/posts/${post.slug}/`,
-  }));
-
-  const processedTweets = tweets.map((tweet) => ({
-    type: '片段',
-    date: tweet.data.pubDate,
-    title: tweet.body.replace(/<[^>]*>?/gm, '').substring(0, 50) + '...',
-    url: `/tweets#${tweet.slug}`,
-  }));
-
-  const allActivity = [...processedPosts, ...processedTweets].sort(
-    (a, b) => b.date.valueOf() - a.date.valueOf(),
-  );
-
-  // 如果成功，就用真实数据覆盖空的 recentActivity 数组
-  recentActivity = allActivity.slice(0, 5);
+  recentActivity = posts
+    .map((post) => ({
+      date: post.data.pubDate,
+      title: post.data.title ?? post.slug,
+      url: `/posts/${post.slug}/`,
+    }))
+    .sort((left, right) => right.date.valueOf() - left.date.valueOf())
+    .slice(0, 5);
 } catch (error) {
-  // 3. 如果出现任何错误，在终端打印它，但不会让页面崩溃
-  console.error('Error fetching or processing recent activity:', error);
+  console.error('Error fetching recent activity:', error);
 }
 ---
 
 <section class="latest-activity">
-  <ul class="latest-activity__list list--unstyled list--spaced">
-    {
-      recentActivity.map((item) => (
-        <li>
-          <Card
-            href={item.url}
-            variant="interactive"
-            class="latest-activity__card"
-            aria-label={`${item.type}：${item.title}`}
-          >
-            <span
-              class={`tag ${item.type === '文章' ? 'tag--post' : 'tag--tweet'}`}
+  {
+    recentActivity.length > 0 ? (
+      <ul class="latest-activity__list list--unstyled list--spaced">
+        {recentActivity.map((item) => (
+          <li>
+            <Card
+              href={item.url}
+              variant="interactive"
+              class="latest-activity__card"
+              aria-label={item.title}
             >
-              {item.type}
-            </span>
-            <span class="latest-activity__title">{item.title}</span>
-            <time class="text-muted text-sm text-nowrap">
-              {item.date.toLocaleDateString()}
-            </time>
-          </Card>
-        </li>
-      ))
-    }
-  </ul>
+              <span class="latest-activity__title">
+                <span>{item.title}</span>
+              </span>
+              <time class="text-muted text-sm text-nowrap">
+                {dateFormatter.format(item.date)}
+              </time>
+            </Card>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <Card>
+        <p class="text-muted">内容索引正在整理中，稍后会显示最近活动。</p>
+      </Card>
+    )
+  }
 </section>

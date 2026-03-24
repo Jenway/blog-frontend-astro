@@ -1,80 +1,128 @@
 ---
-// src/pages/index.astro
 import Layout from '../layouts/Layout.astro';
+import HitokotoQuote from '../components/HitokotoQuote.astro';
 import LatestActivity from '../components/LatestActivity.astro';
 import Button from '../components/ui/Button.astro';
-import Card from '../components/ui/Card.astro';
+import { siteCopy } from '../utils/site-copy';
 ---
 
-<Layout title="Jenway 的新空间">
-  <section class="hero">
-    <span class="eyebrow">Alpha Build</span>
-    <h1 class="hero__title">一个正在呼吸的数字花园</h1>
-    <p class="text-muted">
-      修剪旧文章、补写新片段，尝试把多年的碎片整理成一条可漫步的小径。你看到的一切都在实验中。
-    </p>
-    <div class="hero__actions">
-      <Button href="/posts/" variant="primary">探索文章</Button>
-      <Button href="/tweets/" variant="secondary">浏览片段</Button>
+<Layout
+  title={siteCopy.home.page.title}
+  description={siteCopy.home.page.description}
+>
+  <section class="home-masthead">
+    <div class="home-masthead__headline">
+      <span class="hero__kicker">{siteCopy.home.masthead.kicker}</span>
+      <h1 class="hero__title home-masthead__title">
+        {siteCopy.home.masthead.title}
+      </h1>
+      <p class="home-masthead__subhead">{siteCopy.home.masthead.subhead}</p>
+      <HitokotoQuote
+        fallbackText={siteCopy.home.hitokoto.fallback_text}
+        fallbackSource={siteCopy.home.hitokoto.fallback_source}
+      />
+    </div>
+
+    <div class="home-masthead__aside">
+      {
+        siteCopy.home.facts.map((fact) => (
+          <div class="home-kv">
+            <span>{fact.label}</span>
+            <strong>{fact.value}</strong>
+          </div>
+        ))
+      }
     </div>
   </section>
 
-  <Card class="latest">
-    <div class="section-header">
-      <h2>最新动态</h2>
-      <p class="text-muted">最近写就的文章与片段，持续补货中。</p>
-    </div>
-    <LatestActivity />
-  </Card>
+  <section class="home-feature-band">
+    <section class="home-route-grid">
+      {
+        siteCopy.home.routes.map((route) => (
+          <a
+            class={`home-route-card home-route-card--${route.variant}`}
+            href={route.href}
+          >
+            <span class="home-route-card__index">{route.index}</span>
+            <div class="home-route-card__body">
+              <h2>{route.title}</h2>
+              <p>{route.description}</p>
+            </div>
+            <span class="home-route-card__arrow">{route.arrow}</span>
+          </a>
+        ))
+      }
+      <div class="home-route-tile home-route-tile--paper" aria-hidden="true">
+        <span class="home-route-tile__caption"
+          >{siteCopy.home.visual.caption}</span
+        >
+      </div>
+      <div class="home-route-tile home-route-tile--sun" aria-hidden="true">
+      </div>
+      <div class="home-route-tile home-route-tile--mark" aria-hidden="true">
+      </div>
+    </section>
 
-  <div class="divider" role="presentation"></div>
-
-  <section class="grid grid--2-cols">
-    <Card class="highlight-card">
-      <h3>内容施工计划</h3>
-      <ul>
-        <li>迁移旧站精选文章，补齐插图与脚注。</li>
-        <li>把「片段」整理成年度合集，方便回看。</li>
-        <li>为小说世界观整理年表与角色关系。</li>
-      </ul>
-    </Card>
-    <Card class="highlight-card">
-      <h3>正在构思的模块</h3>
-      <ul>
-        <li>长文阅读体验：字体、行距与脚注样式。</li>
-        <li>图像走廊：把摄影、手账与素描集中展示。</li>
-        <li>订阅入口：用 Newsletter 推送最新动态。</li>
-      </ul>
-    </Card>
+    <section
+      class="section-panel section-panel--plain home-feature-band__latest"
+    >
+      <div class="section-header home-feature-band__latest-header">
+        <div class="home-feature-band__latest-heading">
+          <span class="eyebrow">{siteCopy.home.latest_activity.eyebrow}</span>
+          <h2>{siteCopy.home.latest_activity.title}</h2>
+        </div>
+        <Button href="/posts/" variant="outline" size="sm">
+          {siteCopy.home.latest_activity.cta_label}
+        </Button>
+      </div>
+      <LatestActivity />
+    </section>
   </section>
 
-  <Card class="about">
-    <h2>关于 Jenway</h2>
-    <p>
-      写字、拍照、做梦的普通人。喜欢在广州与互联网之间穿梭，也常常沉迷于奇幻小说、科幻电影和一杯温热的拿铁。这个空间记录正在发生的创作、思考与试验。
-    </p>
-    <p class="text-muted">
-      旧站存档仍在：
-      <a href="https://hexo.jenway.link" target="_blank" rel="noopener"
-        >hexo.jenway.link</a
-      >
-    </p>
-  </Card>
+  <section class="home-utility-strip" aria-label="辅助入口">
+    {
+      siteCopy.home.utilities.map((item) => (
+        <a
+          class="home-utility-link"
+          href={item.href}
+          target={item.new_tab ? '_blank' : undefined}
+          rel={item.new_tab ? 'noopener' : undefined}
+        >
+          <span class="home-utility-link__index">{item.index}</span>
+          <div class="home-utility-link__body">
+            <h2>{item.title}</h2>
+            <p>{item.description}</p>
+          </div>
+          <span class="home-utility-link__arrow">{item.arrow}</span>
+        </a>
+      ))
+    }
+  </section>
 
-  <Fragment slot="sidebar">
-    <Card variant="sidebar">
-      <h3>保持联络</h3>
-      <p class="text-muted">来信、交换想法或约咖啡都可以：</p>
-      <a class="sidebar-link" href="mailto:mail@jenway.link">mail@jenway.link</a
-      >
-    </Card>
-    <Card variant="sidebar">
-      <h3>造景清单</h3>
-      <ul class="sidebar-list list--unstyled">
-        <li>补完片段分页与筛选器</li>
-        <li>引入夜间模式</li>
-        <li>撰写 About 与 FAQ</li>
+  <section class="home-content-grid">
+    <section class="section-panel section-panel--framed">
+      <div class="section-header">
+        <span class="eyebrow">{siteCopy.home.current_focus.eyebrow}</span>
+        <h2>{siteCopy.home.current_focus.title}</h2>
+      </div>
+      <ul class="feature-list">
+        {siteCopy.home.current_focus.items.map((item) => <li>{item}</li>)}
       </ul>
-    </Card>
-  </Fragment>
+    </section>
+
+    <section class="section-panel section-panel--framed">
+      <div class="section-header">
+        <span class="eyebrow">{siteCopy.home.about.eyebrow}</span>
+        <h2>{siteCopy.home.about.title}</h2>
+      </div>
+      <p>{siteCopy.home.about.body}</p>
+      <p class="text-muted">
+        {siteCopy.home.about.legacy_prefix}
+        <a href={siteCopy.site.legacy_url} target="_blank" rel="noopener">
+          {siteCopy.home.about.legacy_link_label}
+        </a>
+        {siteCopy.home.about.legacy_suffix}
+      </p>
+    </section>
+  </section>
 </Layout>

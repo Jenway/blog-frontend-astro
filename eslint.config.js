@@ -7,6 +7,16 @@ import globals from 'globals';
 import tsPlugin from '@typescript-eslint/eslint-plugin';
 
 export default [
+  {
+    ignores: [
+      'node_modules/**',
+      'dist/**',
+      '**/dist/**',
+      '.astro/**',
+      '.chrome-debug/**',
+    ],
+  },
+
   // JS 文件
   {
     files: ['**/*.js'],
@@ -78,7 +88,6 @@ export default [
 
   // **顶层 settings 配置**
   {
-    ignores: ['node_modules/**'],
     settings: {
       'import/resolver': {
         typescript: {},
