@@ -2,11 +2,12 @@
 // src/pages/posts/[page].astro
 import { getPublicEntries } from '../../utils/content';
 import PostsPagination from '../../components/PostsPagination.astro';
+import { getTotalPages } from '../../utils/pagination';
 
 export async function getStaticPaths() {
   const posts = await getPublicEntries('Posts');
   const postsPerPage = 10;
-  const totalPages = Math.ceil(posts.length / postsPerPage);
+  const totalPages = getTotalPages(posts.length, postsPerPage);
 
   const paths = [];
   for (let i = 2; i <= totalPages; i++) {

@@ -1,0 +1,44 @@
+---
+interface Section {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  sections: Section[];
+}
+
+const { sections } = Astro.props as Props;
+const totalLabel = sections.length.toString().padStart(2, '0');
+---
+
+<section class="reading-rail" data-reading-root aria-label="本文导览">
+  <header class="reading-rail__header">
+    <span class="eyebrow">Reading Rail</span>
+    <div class="reading-rail__status" aria-live="polite">
+      <strong data-reading-current-index>00</strong>
+      <span>/ {totalLabel}</span>
+    </div>
+  </header>
+
+  <div class="reading-rail__track" aria-hidden="true">
+    <span class="reading-rail__bar" data-reading-progress-bar></span>
+  </div>
+
+  <nav class="reading-rail__nav" aria-label="文章章节">
+    {
+      sections.map((section) => (
+        <a
+          class="reading-rail__link"
+          data-depth={section.depth}
+          data-reading-link
+          data-reading-target={section.slug}
+          href={`#${section.slug}`}
+        >
+          <span class="reading-rail__link-copy">{section.text}</span>
+        </a>
+      ))
+    }
+  </nav>
+</section>

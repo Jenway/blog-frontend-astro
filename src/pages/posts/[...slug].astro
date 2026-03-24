@@ -1,7 +1,10 @@
 ---
 // src/pages/posts/[...slug].astro
+import PostColophon from '../../components/PostColophon.astro';
+import ReadingRail from '../../components/ReadingRail.astro';
 import { getPublicEntries } from '../../utils/content';
 import Layout from '../../layouts/Layout.astro';
+import { siteCopy } from '../../utils/site-copy';
 
 export async function getStaticPaths() {
   const posts = await getPublicEntries('Posts');
@@ -10,15 +13,134 @@ export async function getStaticPaths() {
     props: post,
   }));
 }
+const posts = await getPublicEntries('Posts');
 const post = Astro.props;
-const { Content } = await post.render();
+const currentIndex = posts.findIndex((entry) => entry.slug === post.slug);
+const previousPost = currentIndex > 0 ? posts[currentIndex - 1] : undefined;
+const nextPost =
+  currentIndex >= 0 && currentIndex < posts.length - 1
+    ? posts[currentIndex + 1]
+    : undefined;
+const { Content, headings } = await post.render();
+const readingSections = headings.filter(
+  (heading) => heading.depth === 2 || heading.depth === 3,
+);
+const showReadingRail =
+  readingSections.filter((heading) => heading.depth === 2).length >= 3 ||
+  readingSections.length >= 5;
+const permalink = new URL(
+  Astro.url.pathname,
+  Astro.site ?? Astro.url,
+).toString();
+const author = post.data.author ?? siteCopy.site.author_name;
+const licenseName = post.data.license ?? 'CC BY-NC-SA 4.0';
+const licenseUrl = 'https://creativecommons.org/licenses/by-nc-sa/4.0/';
+const postDescription =
+  post.data.description ??
+  `${post.data.title}，发布于 ${post.data.pubDate.toLocaleDateString('zh-CN')}。`;
 ---
 
-<Layout title={post.data.title}>
-  <article>
-    <h1>{post.data.title}</h1>
-    <p>发布于: {post.data.pubDate.toLocaleDateString()}</p>
-    <hr />
-    <Content />
-  </article>
+<Layout
+  title={post.data.title}
+  description={postDescription}
+  type="article"
+  author={author}
+  publishedTime={post.data.pubDate}
+  modifiedTime={post.data.updatedDate}
+  keywords={post.data.tags}
+>
+  <div
+    class="post-shell"
+    data-has-reading-rail={showReadingRail ? 'true' : 'false'}
+  >
+    <article class="prose-card" data-reading-article>
+      <nav class="post-toolbar" aria-label="文章工具">
+        <a class="post-index-link" href="/posts/" data-posts-index-link>
+          返回文章目录
+        </a>
+      </nav>
+
+      <header class="prose-card__header">
+        <span class="eyebrow">Essay</span>
+        <h1 data-header-context-source>{post.data.title}</h1>
+        <div class="prose-card__meta">
+          <time datetime={post.data.pubDate.toISOString()}>
+            发布于 {post.data.pubDate.toLocaleDateString('zh-CN')}
+          </time>
+        </div>
+      </header>
+      <hr />
+      <div class="prose-card__body" data-reading-body>
+        <Content />
+      </div>
+
+      <PostColophon
+        publishedAt={post.data.pubDate}
+        updatedAt={post.data.updatedDate}
+        author={author}
+        permalink={permalink}
+        licenseName={licenseName}
+        licenseUrl={licenseUrl}
+        tags={post.data.tags}
+      />
+
+      <footer class="post-pagination" aria-label="文章前后导航">
+        {
+          previousPost ? (
+            <a
+              class="post-pagination__item"
+              href={`/posts/${previousPost.slug}/`}
+              data-post-neighbor-link
+              rel="prev"
+            >
+              <span class="post-pagination__label">上一篇</span>
+              <strong>{previousPost.data.title}</strong>
+              {previousPost.data.pubDate && (
+                <time datetime={previousPost.data.pubDate.toISOString()}>
+                  {previousPost.data.pubDate.toLocaleDateString('zh-CN')}
+                </time>
+              )}
+            </a>
+          ) : (
+            <div class="post-pagination__item post-pagination__item--empty">
+              <span class="post-pagination__label">上一篇</span>
+              <strong>已经是最新一篇</strong>
+            </div>
+          )
+        }
+
+        {
+          nextPost ? (
+            <a
+              class="post-pagination__item"
+              href={`/posts/${nextPost.slug}/`}
+              data-post-neighbor-link
+              rel="next"
+            >
+              <span class="post-pagination__label">下一篇</span>
+              <strong>{nextPost.data.title}</strong>
+              {nextPost.data.pubDate && (
+                <time datetime={nextPost.data.pubDate.toISOString()}>
+                  {nextPost.data.pubDate.toLocaleDateString('zh-CN')}
+                </time>
+              )}
+            </a>
+          ) : (
+            <div class="post-pagination__item post-pagination__item--empty">
+              <span class="post-pagination__label">下一篇</span>
+              <strong>已经是最早一篇</strong>
+            </div>
+          )
+        }
+      </footer>
+    </article>
+
+    {
+      showReadingRail && (
+        <aside class="post-shell__rail" aria-label="阅读辅助">
+          <ReadingRail sections={readingSections} />
+        </aside>
+      )
+    }
+  </div>
 </Layout>

@@ -1,0 +1,105 @@
+---
+import { buildTagHref, normalizeTags } from '../utils/tags';
+
+interface Props {
+  publishedAt: Date;
+  updatedAt?: Date;
+  author: string;
+  permalink: string;
+  licenseName: string;
+  licenseUrl: string;
+  tags?: string[];
+}
+
+const {
+  publishedAt,
+  updatedAt,
+  author,
+  permalink,
+  licenseName,
+  licenseUrl,
+  tags = [],
+} = Astro.props as Props;
+
+const normalizedTags = normalizeTags(tags);
+const hasUpdatedAt =
+  updatedAt instanceof Date && updatedAt.valueOf() !== publishedAt.valueOf();
+---
+
+<section class="post-colophon" aria-labelledby="post-colophon-title">
+  <header class="post-colophon__header">
+    <span class="eyebrow">Colophon</span>
+    <h2 id="post-colophon-title" class="post-colophon__title">发布信息</h2>
+  </header>
+
+  <dl class="post-colophon__grid">
+    <div class="post-colophon__item">
+      <dt>发布于</dt>
+      <dd>
+        <time datetime={publishedAt.toISOString()}>
+          {publishedAt.toLocaleDateString('zh-CN')}
+        </time>
+      </dd>
+    </div>
+
+    {
+      hasUpdatedAt && updatedAt && (
+        <div class="post-colophon__item">
+          <dt>更新于</dt>
+          <dd>
+            <time datetime={updatedAt.toISOString()}>
+              {updatedAt.toLocaleDateString('zh-CN')}
+            </time>
+          </dd>
+        </div>
+      )
+    }
+
+    <div class="post-colophon__item">
+      <dt>作者</dt>
+      <dd>{author}</dd>
+    </div>
+
+    <div class="post-colophon__item">
+      <dt>固定链接</dt>
+      <dd class="post-colophon__permalink">
+        <a href={permalink}>{permalink.replace(/^https?:\/\//, '')}</a>
+        <button
+          class="post-colophon__copy-button"
+          type="button"
+          data-copy-text={permalink}
+          data-copy-text-default="复制"
+          data-copy-text-success="已复制"
+          data-copy-text-failed="失败"
+          data-copy-button
+        >
+          复制
+        </button>
+      </dd>
+    </div>
+
+    <div class="post-colophon__item">
+      <dt>许可协议</dt>
+      <dd>
+        <a href={licenseUrl} rel="license noopener noreferrer" target="_blank">
+          {licenseName}
+        </a>
+      </dd>
+    </div>
+
+    {
+      normalizedTags.length > 0 && (
+        <div class="post-colophon__item post-colophon__item--wide">
+          <dt>标签</dt>
+          <dd class="post-colophon__tags">
+            {normalizedTags.map((tag) => (
+              <a class="post-colophon__tag" href={buildTagHref(tag)}>
+                {tag}
+              </a>
+            ))}
+          </dd>
+        </div>
+      )
+    }
+  </dl>
+</section>

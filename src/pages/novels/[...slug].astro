@@ -16,12 +16,21 @@ const chapter = Astro.props;
 const { Content } = await chapter.render();
 ---
 
-<Layout title={`${chapter.data.title} - 小说`}>
+<Layout
+  title={`${chapter.data.title} - 小说`}
+  description={chapter.data.description ??
+    `小说章节《${chapter.data.title}》，第 ${chapter.data.chapter} 章。`}
+>
   <Card as="article" class="prose-card">
     <header class="prose-card__header">
+      <span class="eyebrow">Chapter</span>
       <h1>{chapter.data.title}</h1>
-      <p class="text-muted">第 {chapter.data.chapter} 章</p>
+      <div class="prose-card__meta">
+        <span>第 {chapter.data.chapter} 章</span>
+      </div>
     </header>
-    <Content />
+    <div class="prose-card__body">
+      <Content />
+    </div>
   </Card>
 </Layout>

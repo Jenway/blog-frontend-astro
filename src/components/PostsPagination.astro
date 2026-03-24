@@ -4,6 +4,7 @@ import { getPublicEntries } from '../utils/content';
 import Layout from '../layouts/Layout.astro';
 import Card from './ui/Card.astro';
 import Pagination from './ui/Pagination.astro';
+import { getPageSlice, getTotalPages } from '../utils/pagination';
 
 interface Props {
   currentPage: number;
@@ -13,28 +14,37 @@ const { currentPage } = Astro.props;
 
 const posts = await getPublicEntries('Posts');
 const postsPerPage = 10;
-const totalPages = Math.ceil(posts.length / postsPerPage);
-const startIndex = (currentPage - 1) * postsPerPage;
-const endIndex = startIndex + postsPerPage;
-const paginatedPosts = posts.slice(startIndex, endIndex);
+const totalPages = getTotalPages(posts.length, postsPerPage);
+const paginatedPosts = getPageSlice(posts, currentPage, postsPerPage);
 
 const anchorId = 'posts-top';
+const currentIndexPath =
+  currentPage === 1 ? '/posts/' : `/posts/${currentPage}/`;
 
 const pageTitle =
   currentPage === 1 ? '文章目录' : `文章目录 - 第 ${currentPage} 页`;
-const pageHeading =
-  currentPage === 1
-    ? '所有文章'
-    : `所有文章 <small>第 ${currentPage} 页</small>`;
-
-const hasPagination = totalPages > 1;
 ---
 
-<Layout title={pageTitle}>
+<Layout
+  title={pageTitle}
+  description="按时间整理的文章目录，收录 Jenway 的长文写作与归档内容。"
+>
   <div class="archive" id={anchorId}>
     <header class="archive__header">
       <span class="eyebrow">Archive</span>
-      <h2 set:html={pageHeading} />
+      <h1>所有文章</h1>
+      <p class="text-muted">
+        按发布时间归档的长文入口。适合从目录漫游，也适合直接翻到任意一页。
+      </p>
+      {
+        totalPages > 1 && (
+          <div class="archive__meta">
+            <span>第 {currentPage} 页</span>
+            <span>共 {totalPages} 页</span>
+            <span>{posts.length} 篇文章</span>
+          </div>
+        )
+      }
     </header>
 
     <ul class="list--unstyled list--spaced-lg">
@@ -43,17 +53,19 @@ const hasPagination = totalPages > 1;
           <li>
             <Card variant="archive">
               <h3 class="archive__title">
-                <a href={`/posts/${post.slug}/`} class="archive__link">
+                <a
+                  href={`/posts/${post.slug}/?from=${encodeURIComponent(currentIndexPath)}`}
+                  class="archive__link"
+                >
                   {post.data.title}
                 </a>
               </h3>
               {post.data.pubDate && (
-                <time
-                  datetime={post.data.pubDate.toISOString()}
-                  class="text-muted text-sm"
-                >
-                  {post.data.pubDate.toLocaleDateString()}
-                </time>
+                <div class="archive__meta">
+                  <time datetime={post.data.pubDate.toISOString()}>
+                    {post.data.pubDate.toLocaleDateString('zh-CN')}
+                  </time>
+                </div>
               )}
             </Card>
           </li>
