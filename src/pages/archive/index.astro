@@ -1,0 +1,59 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Card from '../../components/ui/Card.astro';
+import { formatArchiveDate, getArchiveCounts, getArchiveItems } from '../../utils/archive';
+
+const archiveItems = getArchiveItems();
+const counts = getArchiveCounts(archiveItems);
+---
+
+<Layout
+  title="摘录存档"
+  description="Jenway 保存下来的网页快照、摘录文章与 PDF 文档索引。"
+>
+  <div class="archive archive-collection" id="archive-top">
+    <header class="archive__header archive-collection__header">
+      <span class="eyebrow">Private Archive</span>
+      <h1>摘录存档</h1>
+      <p class="text-muted">
+        这里收纳我手动保存下来的网页、文章摘录与文档快照。它更像一座个人
+        Internet Archive，而不是常规博客栏目。
+      </p>
+      <div class="archive__meta">
+        <span>{archiveItems.length} 条存档</span>
+        <span>{counts.markdown} 篇摘录</span>
+        <span>{counts.html} 个网页快照</span>
+        <span>{counts.pdf} 份文档</span>
+      </div>
+    </header>
+
+    <ul class="list--unstyled list--spaced-lg">
+      {
+        archiveItems.map((item) => (
+          <li>
+            <Card variant="archive" class="archive-entry">
+              <div class="archive-entry__head">
+                <p class="archive__meta archive-entry__eyebrow">
+                  <span>{item.formatLabel}</span>
+                  {item.sourceHost && <span>{item.sourceHost}</span>}
+                </p>
+                <h2 class="archive__title">
+                  <a class="archive__link" href={`/archive/${item.slug}/`}>
+                    {item.title}
+                  </a>
+                </h2>
+              </div>
+
+              <p class="archive-entry__excerpt text-muted">{item.excerpt}</p>
+
+              <div class="archive__meta archive-entry__meta">
+                <span>保存于 {formatArchiveDate(item.savedAt)}</span>
+                <span>{item.filename}</span>
+              </div>
+            </Card>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</Layout>

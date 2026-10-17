@@ -816,6 +816,120 @@
   color: var(--primary);
 }
 
+.archive-collection__header {
+  padding-bottom: 1rem;
+  border-bottom: 3px solid var(--outline-strong);
+}
+
+.archive-entry {
+  gap: 0.75rem;
+}
+
+.archive-entry__head {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.archive-entry__eyebrow {
+  margin: 0;
+}
+
+.archive-entry__excerpt {
+  margin: 0;
+  max-width: 54rem;
+  line-height: 1.8;
+}
+
+.archive-entry__meta {
+  row-gap: 0.3rem;
+}
+
+.archive-reader {
+  gap: 1.15rem;
+}
+
+.archive-reader__header {
+  padding-bottom: 0.2rem;
+  border-bottom: 1px solid var(--outline);
+}
+
+.archive-reader__body {
+  display: grid;
+  gap: 1rem;
+}
+
+.archive-summary {
+  display: grid;
+  gap: 0.85rem;
+  padding-block: 0.3rem 1rem;
+  border-bottom: 1px solid var(--outline);
+}
+
+.archive-summary__grid {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.archive-summary__item {
+  display: grid;
+  gap: 0.2rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--hairline);
+}
+
+.archive-summary__item dt {
+  color: var(--text-muted);
+  font-family: var(--font-ui);
+  font-size: var(--font-xs);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.archive-summary__item dd {
+  margin: 0;
+}
+
+.archive-summary__item dd a {
+  color: inherit;
+  word-break: break-all;
+  text-decoration: none;
+}
+
+.archive-summary__item dd a:hover,
+.archive-summary__item dd a:focus-visible {
+  color: var(--primary);
+  outline: none;
+}
+
+.archive-embed {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.archive-embed__toolbar {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.archive-embed__frame {
+  width: 100%;
+  min-height: 78vh;
+  border: 2px solid var(--outline-strong);
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-sm);
+}
+
+.archive-embed__frame--pdf {
+  min-height: 82vh;
+}
+
+.archive-embed--empty {
+  padding: 1rem 0;
+  border-top: 1px solid var(--outline);
+}
+
 .pagination {
   display: grid;
   gap: 0.75rem;
@@ -1863,6 +1977,15 @@
   }
 
   .post-colophon__item--wide {
+    grid-column: 1 / -1;
+  }
+
+  .archive-summary__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 1rem;
+  }
+
+  .archive-summary__item--wide {
     grid-column: 1 / -1;
   }
 }

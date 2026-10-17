@@ -1,0 +1,140 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { formatArchiveDate, getArchiveItemBySlug, getArchiveItems } from '../../utils/archive';
+
+export async function getStaticPaths() {
+  return getArchiveItems().map((item) => ({
+    params: { slug: item.slug },
+  }));
+}
+
+const archiveItem = getArchiveItemBySlug(Astro.params.slug ?? '');
+
+if (!archiveItem) {
+  throw new Error(`Archive item not found for slug: ${Astro.params.slug}`);
+}
+
+const Content = archiveItem.contentComponent as
+  | AstroComponentFactory
+  | undefined;
+const permalink = new URL(
+  Astro.url.pathname,
+  Astro.site ?? Astro.url,
+).toString();
+const pageDescription =
+  archiveItem.excerpt ||
+  `摘录存档《${archiveItem.title}》，保存于 ${formatArchiveDate(archiveItem.savedAt)}。`;
+---
+
+<Layout
+  title={archiveItem.title}
+  description={pageDescription}
+  type="article"
+  publishedTime={archiveItem.savedAt}
+  keywords={['archive', archiveItem.formatLabel, archiveItem.sourceHost ?? 'saved']}
+>
+  <article class="prose-card archive-reader">
+    <nav class="post-toolbar" aria-label="摘录工具">
+      <a class="post-index-link" href="/archive/" data-posts-index-link>
+        返回摘录目录
+      </a>
+    </nav>
+
+    <header class="prose-card__header archive-reader__header">
+      <span class="eyebrow">Archive Reader</span>
+      <h1 data-header-context-source>{archiveItem.title}</h1>
+      <div class="prose-card__meta">
+        <span>{archiveItem.formatLabel}</span>
+        <span>保存于 {formatArchiveDate(archiveItem.savedAt)}</span>
+        {archiveItem.sourceHost && <span>{archiveItem.sourceHost}</span>}
+      </div>
+    </header>
+
+    <section class="archive-summary" aria-label="摘录信息">
+      <dl class="archive-summary__grid">
+        <div class="archive-summary__item">
+          <dt>格式</dt>
+          <dd>{archiveItem.formatLabel}</dd>
+        </div>
+        <div class="archive-summary__item">
+          <dt>保存时间</dt>
+          <dd>{formatArchiveDate(archiveItem.savedAt)}</dd>
+        </div>
+        {archiveItem.sourceUrl && (
+          <div class="archive-summary__item archive-summary__item--wide">
+            <dt>原始来源</dt>
+            <dd>
+              <a href={archiveItem.sourceUrl} target="_blank" rel="noopener noreferrer">
+                {archiveItem.sourceUrl}
+              </a>
+            </dd>
+          </div>
+        )}
+        <div class="archive-summary__item archive-summary__item--wide">
+          <dt>固定链接</dt>
+          <dd class="post-colophon__permalink">
+            <a href={permalink}>{permalink.replace(/^https?:\/\//, '')}</a>
+            <button
+              class="post-colophon__copy-button"
+              type="button"
+              data-copy-text={permalink}
+              data-copy-text-default="复制"
+              data-copy-text-success="已复制"
+              data-copy-text-failed="失败"
+              data-copy-button
+            >
+              复制
+            </button>
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+    <div class="archive-reader__body">
+      {
+        archiveItem.format === 'markdown' && Content ? (
+          <div class="prose-card__body" data-reading-body>
+            <Content />
+          </div>
+        ) : archiveItem.assetUrl ? (
+          <section class="archive-embed" aria-label="归档预览">
+            <div class="archive-embed__toolbar">
+              <a
+                class="btn btn--outline btn--sm"
+                href={archiveItem.assetUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                打开原始文件
+              </a>
+            </div>
+
+            {
+              archiveItem.format === 'pdf' ? (
+                <iframe
+                  class="archive-embed__frame archive-embed__frame--pdf"
+                  src={archiveItem.assetUrl}
+                  title={archiveItem.title}
+                  loading="lazy"
+                ></iframe>
+              ) : (
+                <iframe
+                  class="archive-embed__frame"
+                  src={archiveItem.assetUrl}
+                  title={archiveItem.title}
+                  loading="lazy"
+                  sandbox="allow-same-origin"
+                  referrerpolicy="no-referrer"
+                ></iframe>
+              )
+            }
+          </section>
+        ) : (
+          <section class="archive-embed archive-embed--empty">
+            <p class="text-muted">该条目暂时没有可直接嵌入的内容。</p>
+          </section>
+        )
+      }
+    </div>
+  </article>
+</Layout>
