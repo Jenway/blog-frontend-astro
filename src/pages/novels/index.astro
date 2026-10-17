@@ -11,11 +11,7 @@ const chapters = (await getPublicEntries('Novels')).sort(
 
 <Layout title="小说目录">
   <Card as="section" class="novel-directory">
-    <span class="eyebrow">Novel Shelf</span>
     <h1>小说章节</h1>
-    <p class="text-muted">
-      按章节顺序整理的长篇草稿入口。适合从头阅读，也适合随手回到任一段落。
-    </p>
     <ol class="novel-directory__list">
       {
         chapters.map((chapter) => (

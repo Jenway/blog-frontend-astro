@@ -1,6 +1,10 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { formatArchiveDate, getArchiveItemBySlug, getArchiveItems } from '../../utils/archive';
+import {
+  formatArchiveDate,
+  getArchiveItemBySlug,
+  getArchiveItems,
+} from '../../utils/archive';
 
 export async function getStaticPaths() {
   return getArchiveItems().map((item) => ({
@@ -31,7 +35,11 @@ const pageDescription =
   description={pageDescription}
   type="article"
   publishedTime={archiveItem.savedAt}
-  keywords={['archive', archiveItem.formatLabel, archiveItem.sourceHost ?? 'saved']}
+  keywords={[
+    'archive',
+    archiveItem.formatLabel,
+    archiveItem.sourceHost ?? 'saved',
+  ]}
 >
   <article class="prose-card archive-reader">
     <nav class="post-toolbar" aria-label="摘录工具">
@@ -41,7 +49,6 @@ const pageDescription =
     </nav>
 
     <header class="prose-card__header archive-reader__header">
-      <span class="eyebrow">Archive Reader</span>
       <h1 data-header-context-source>{archiveItem.title}</h1>
       <div class="prose-card__meta">
         <span>{archiveItem.formatLabel}</span>
@@ -60,16 +67,22 @@ const pageDescription =
           <dt>保存时间</dt>
           <dd>{formatArchiveDate(archiveItem.savedAt)}</dd>
         </div>
-        {archiveItem.sourceUrl && (
-          <div class="archive-summary__item archive-summary__item--wide">
-            <dt>原始来源</dt>
-            <dd>
-              <a href={archiveItem.sourceUrl} target="_blank" rel="noopener noreferrer">
-                {archiveItem.sourceUrl}
-              </a>
-            </dd>
-          </div>
-        )}
+        {
+          archiveItem.sourceUrl && (
+            <div class="archive-summary__item archive-summary__item--wide">
+              <dt>原始来源</dt>
+              <dd>
+                <a
+                  href={archiveItem.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {archiveItem.sourceUrl}
+                </a>
+              </dd>
+            </div>
+          )
+        }
         <div class="archive-summary__item archive-summary__item--wide">
           <dt>固定链接</dt>
           <dd class="post-colophon__permalink">
@@ -109,25 +122,23 @@ const pageDescription =
               </a>
             </div>
 
-            {
-              archiveItem.format === 'pdf' ? (
-                <iframe
-                  class="archive-embed__frame archive-embed__frame--pdf"
-                  src={archiveItem.assetUrl}
-                  title={archiveItem.title}
-                  loading="lazy"
-                ></iframe>
-              ) : (
-                <iframe
-                  class="archive-embed__frame"
-                  src={archiveItem.assetUrl}
-                  title={archiveItem.title}
-                  loading="lazy"
-                  sandbox="allow-same-origin"
-                  referrerpolicy="no-referrer"
-                ></iframe>
-              )
-            }
+            {archiveItem.format === 'pdf' ? (
+              <iframe
+                class="archive-embed__frame archive-embed__frame--pdf"
+                src={archiveItem.assetUrl}
+                title={archiveItem.title}
+                loading="lazy"
+              />
+            ) : (
+              <iframe
+                class="archive-embed__frame"
+                src={archiveItem.assetUrl}
+                title={archiveItem.title}
+                loading="lazy"
+                sandbox="allow-same-origin"
+                referrerpolicy="no-referrer"
+              />
+            )}
           </section>
         ) : (
           <section class="archive-embed archive-embed--empty">

@@ -9,6 +9,9 @@
 
   --primary: #0d5bff;
   --primary-strong: #003bb8;
+  --field-blue: #0d5bff;
+  --field-yellow: #ffcf2d;
+  --field-red: #ff5a36;
   --primary-soft: rgba(13, 91, 255, 0.14);
   --secondary: #ffcf2d;
   --secondary-strong: #ed9c00;
@@ -80,6 +83,9 @@
 [data-theme='dark'] {
   --primary: #8eb4ff;
   --primary-strong: #bed2ff;
+  --field-blue: #2a5fc4;
+  --field-yellow: #ad7d00;
+  --field-red: #b23a25;
   --primary-soft: rgba(142, 180, 255, 0.16);
   --secondary: #ffd457;
   --secondary-strong: #ffeb99;

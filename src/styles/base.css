@@ -118,7 +118,7 @@ hr {
   z-index: 40;
   backdrop-filter: blur(10px);
   background: color-mix(in srgb, var(--page-bg) 90%, transparent);
-  border-bottom: 3px solid var(--outline-strong);
+  border-bottom: 4px solid var(--outline-strong);
 }
 
 .site-header__inner {
@@ -291,7 +291,7 @@ hr {
   max-width: var(--layout-content-width);
   margin-inline: auto;
   padding: clamp(1rem, 1vw + 0.8rem, 1.8rem);
-  border: 3px solid var(--outline-strong);
+  border: 2px solid var(--outline-strong);
   background: var(--surface-strong);
   box-shadow: var(--shadow-md);
 }
@@ -319,7 +319,7 @@ hr {
 }
 
 .site-footer {
-  border-top: 3px solid var(--outline-strong);
+  border-top: 4px solid var(--outline-strong);
   padding-block: var(--space-fluid-lg);
 }
 

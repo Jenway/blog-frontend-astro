@@ -58,7 +58,9 @@ export function getArchiveItemBySlug(slug: string): ArchiveItem | undefined {
   return archiveItems.find((item) => item.slug === slug);
 }
 
-export function getArchiveCounts(items = archiveItems): Record<ArchiveFormat, number> {
+export function getArchiveCounts(
+  items = archiveItems,
+): Record<ArchiveFormat, number> {
   return items.reduce<Record<ArchiveFormat, number>>(
     (counts, item) => {
       counts[item.format] += 1;
@@ -131,8 +133,7 @@ function buildArchiveItem(
       extractMarkdownTitle(raw) ??
       cleanName;
     sourceUrl =
-      getStringValue(frontmatter.url) ??
-      extractMarkdownSourceUrl(raw);
+      getStringValue(frontmatter.url) ?? extractMarkdownSourceUrl(raw);
     savedAt = parseArchiveDate(
       getStringValue(frontmatter.savedDate) ??
         getStringValue(frontmatter.saved_date) ??
@@ -248,7 +249,9 @@ function shortHash(value: string): string {
     hash = Math.imul(hash, 16777619);
   }
 
-  return Math.abs(hash >>> 0).toString(36).slice(0, 6);
+  return Math.abs(hash >>> 0)
+    .toString(36)
+    .slice(0, 6);
 }
 
 function parseFrontmatter(raw: string): Record<string, string> {
@@ -321,7 +324,10 @@ function extractSavedDate(raw: string): string | undefined {
   return match?.[1]?.trim();
 }
 
-function extractMarkdownExcerpt(raw: string, title: string): string | undefined {
+function extractMarkdownExcerpt(
+  raw: string,
+  title: string,
+): string | undefined {
   const content = stripFrontmatter(raw);
 
   for (const line of content.split(/\r?\n/u)) {
@@ -335,6 +341,9 @@ function extractMarkdownExcerpt(raw: string, title: string): string | undefined 
 
     if (!candidate || candidate === title || candidate === '原文') continue;
     if (candidate.length < 6) continue;
+    if (/https?:\/\//iu.test(candidate)) continue;
+    if ((candidate.match(/[\p{Script=Han}A-Za-z]/gu) ?? []).length < 8)
+      continue;
 
     return truncateText(candidate, 160);
   }
@@ -434,11 +443,13 @@ function getSourceHost(value?: string): string | undefined {
 
 function sanitizeInlineMarkdown(value: string): string {
   return value
-    .replace(/!\[([^\]]*)\]\([^)]+\)/gu, '$1')
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/gu, '$1')
+    .replace(/!\[([^\]]*)\]\([^)]*\)/gu, '$1')
+    .replace(/\[([^\]]*)\]\([^)]*\)/gu, '$1')
     .replace(/`([^`]+)`/gu, '$1')
+    .replace(/https?:\/\/\S+/gu, ' ')
     .replace(/[*_~>#-]+/gu, ' ')
     .replace(/<[^>]+>/gu, ' ')
+    .replace(/[[\]()]/gu, ' ')
     .replace(/\s+/gu, ' ')
     .trim();
 }
@@ -470,7 +481,11 @@ function compareArchiveItems(left: ArchiveItem, right: ArchiveItem): number {
   const leftTime = left.savedAt?.valueOf();
   const rightTime = right.savedAt?.valueOf();
 
-  if (leftTime !== undefined && rightTime !== undefined && leftTime !== rightTime) {
+  if (
+    leftTime !== undefined &&
+    rightTime !== undefined &&
+    leftTime !== rightTime
+  ) {
     return rightTime - leftTime;
   }
 

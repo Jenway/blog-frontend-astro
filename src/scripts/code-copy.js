@@ -109,8 +109,12 @@
     void copyTextValue(genericButton);
   });
 
-  browserDocument.addEventListener('astro:after-swap', enhanceCodeBlocks);
-  browserDocument.addEventListener('astro:page-load', enhanceCodeBlocks);
+  browserDocument.addEventListener('astro:after-swap', () =>
+    enhanceCodeBlocks(),
+  );
+  browserDocument.addEventListener('astro:page-load', () =>
+    enhanceCodeBlocks(),
+  );
 
   browserWindow.__ggCodeCopy = {
     enhance(root) {
@@ -121,9 +125,11 @@
   };
 
   if (browserDocument.readyState === 'loading') {
-    browserDocument.addEventListener('DOMContentLoaded', enhanceCodeBlocks, {
-      once: true,
-    });
+    browserDocument.addEventListener(
+      'DOMContentLoaded',
+      () => enhanceCodeBlocks(),
+      { once: true },
+    );
   } else {
     enhanceCodeBlocks();
   }

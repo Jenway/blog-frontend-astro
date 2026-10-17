@@ -12,26 +12,13 @@ import { siteCopy } from '../utils/site-copy';
 >
   <section class="home-masthead">
     <div class="home-masthead__headline">
-      <span class="hero__kicker">{siteCopy.home.masthead.kicker}</span>
       <h1 class="hero__title home-masthead__title">
         {siteCopy.home.masthead.title}
       </h1>
-      <p class="home-masthead__subhead">{siteCopy.home.masthead.subhead}</p>
       <HitokotoQuote
         fallbackText={siteCopy.home.hitokoto.fallback_text}
         fallbackSource={siteCopy.home.hitokoto.fallback_source}
       />
-    </div>
-
-    <div class="home-masthead__aside">
-      {
-        siteCopy.home.facts.map((fact) => (
-          <div class="home-kv">
-            <span>{fact.label}</span>
-            <strong>{fact.value}</strong>
-          </div>
-        ))
-      }
     </div>
   </section>
 
@@ -48,14 +35,37 @@ import { siteCopy } from '../utils/site-copy';
               <h2>{route.title}</h2>
               <p>{route.description}</p>
             </div>
-            <span class="home-route-card__arrow">{route.arrow}</span>
           </a>
         ))
       }
-      <div class="home-route-tile home-route-tile--paper" aria-hidden="true">
-        <span class="home-route-tile__caption"
-          >{siteCopy.home.visual.caption}</span
+      <a
+        class="home-route-card home-route-card--archive"
+        href={siteCopy.home.archive.href}
+      >
+        <span class="home-route-card__index">{siteCopy.home.archive.index}</span
         >
+        <div class="home-route-card__body">
+          <h2>{siteCopy.home.archive.title}</h2>
+        </div>
+      </a>
+      <div class="home-route-tile home-route-tile--utilities">
+        {
+          siteCopy.home.utilities.map((item) => (
+            <a
+              class="home-utility-link"
+              href={item.href}
+              target={item.new_tab ? '_blank' : undefined}
+              rel={item.new_tab ? 'noopener' : undefined}
+            >
+              <span class="home-utility-link__index">{item.index}</span>
+              <h2>{item.title}</h2>
+            </a>
+          ))
+        }
+      </div>
+      <div class="home-route-tile home-route-tile--blue" aria-hidden="true">
+      </div>
+      <div class="home-route-tile home-route-tile--paper" aria-hidden="true">
       </div>
       <div class="home-route-tile home-route-tile--sun" aria-hidden="true">
       </div>
@@ -67,62 +77,12 @@ import { siteCopy } from '../utils/site-copy';
       class="section-panel section-panel--plain home-feature-band__latest"
     >
       <div class="section-header home-feature-band__latest-header">
-        <div class="home-feature-band__latest-heading">
-          <span class="eyebrow">{siteCopy.home.latest_activity.eyebrow}</span>
-          <h2>{siteCopy.home.latest_activity.title}</h2>
-        </div>
+        <h2>{siteCopy.home.latest_activity.title}</h2>
         <Button href="/posts/" variant="outline" size="sm">
           {siteCopy.home.latest_activity.cta_label}
         </Button>
       </div>
       <LatestActivity />
-    </section>
-  </section>
-
-  <section class="home-utility-strip" aria-label="辅助入口">
-    {
-      siteCopy.home.utilities.map((item) => (
-        <a
-          class="home-utility-link"
-          href={item.href}
-          target={item.new_tab ? '_blank' : undefined}
-          rel={item.new_tab ? 'noopener' : undefined}
-        >
-          <span class="home-utility-link__index">{item.index}</span>
-          <div class="home-utility-link__body">
-            <h2>{item.title}</h2>
-            <p>{item.description}</p>
-          </div>
-          <span class="home-utility-link__arrow">{item.arrow}</span>
-        </a>
-      ))
-    }
-  </section>
-
-  <section class="home-content-grid">
-    <section class="section-panel section-panel--framed">
-      <div class="section-header">
-        <span class="eyebrow">{siteCopy.home.current_focus.eyebrow}</span>
-        <h2>{siteCopy.home.current_focus.title}</h2>
-      </div>
-      <ul class="feature-list">
-        {siteCopy.home.current_focus.items.map((item) => <li>{item}</li>)}
-      </ul>
-    </section>
-
-    <section class="section-panel section-panel--framed">
-      <div class="section-header">
-        <span class="eyebrow">{siteCopy.home.about.eyebrow}</span>
-        <h2>{siteCopy.home.about.title}</h2>
-      </div>
-      <p>{siteCopy.home.about.body}</p>
-      <p class="text-muted">
-        {siteCopy.home.about.legacy_prefix}
-        <a href={siteCopy.site.legacy_url} target="_blank" rel="noopener">
-          {siteCopy.home.about.legacy_link_label}
-        </a>
-        {siteCopy.home.about.legacy_suffix}
-      </p>
     </section>
   </section>
 </Layout>

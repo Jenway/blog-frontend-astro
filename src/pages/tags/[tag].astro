@@ -22,9 +22,7 @@ const taggedPosts = filterPostsByTag(posts, tag);
 <Layout title={`标签：${tag}`} description={`按标签“${tag}”整理的文章归档。`}>
   <section class="archive tags-archive">
     <header class="archive__header">
-      <span class="eyebrow">Tag Archive</span>
       <h1>{tag}</h1>
-      <p class="text-muted">带有这个标签的文章会集中显示在这里。</p>
       <div class="archive__meta">
         <span>{taggedPosts.length} 篇文章</span>
         <a href="/tags/">查看全部标签</a>

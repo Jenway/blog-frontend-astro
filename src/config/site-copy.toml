@@ -39,82 +39,49 @@ title = "Jenway 的 Blog"
 description = "个人静态博客网站，（或许）会不定时更新。"
 
 [home.masthead]
-kicker = "Digital Garden / Broadcast 01"
 title = "你好，世界。"
-subhead = "『又一个随处可见的博客』"
 
 [home.hitokoto]
 fallback_text = "把零散的句子先留在这里，等它们自己长成下一条路。"
 fallback_source = "首页配置"
-
-[[home.facts]]
-label = "Base"
-value = "青岛 / Internet"
-
-[[home.facts]]
-label = "Status"
-value = "绝赞求职中"
-
-[[home.facts]]
-label = "Format"
-value = "占位符"
 
 [[home.routes]]
 href = "/tweets/"
 index = "01"
 title = "片段"
 description = "只言片语"
-arrow = "进入"
-variant = "compact"
+variant = "frag"
 
 [[home.routes]]
 href = "/novels/"
 index = "02"
 title = "小说"
 description = "旧日的梦"
-arrow = "进入"
-variant = "wide"
+variant = "novel"
 
-[home.visual]
-caption = "Field Notes / Open Layout"
+[home.archive]
+href = "/archive/"
+index = "03"
+title = "摘录"
 
 [[home.utilities]]
 href = "/treeholes/"
 index = "04"
 title = "树洞"
-description = "无病呻吟"
-arrow = "进入"
 new_tab = false
 
 [[home.utilities]]
 href = "mailto:mail@jenway.link"
 index = "05"
 title = "联系"
-description = "Contact Me"
-arrow = "mail"
 new_tab = false
 
 [[home.utilities]]
 href = "https://hexo.jenway.link"
 index = "06"
 title = "旧站"
-description = "不是二次元。"
-arrow = "visit"
 new_tab = true
 
 [home.latest_activity]
-eyebrow = "Latest Activity"
 title = "最近文章"
 cta_label = "进入文章目录"
-
-[home.current_focus]
-eyebrow = "Current Focus"
-title = "现在"
-items = [
-  "我不怎么写博客的"
-]
-
-[home.about]
-eyebrow = "About"
-title = "关于 Jenway"
-body = "Major in CS"

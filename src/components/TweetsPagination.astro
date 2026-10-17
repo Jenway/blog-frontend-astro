@@ -54,11 +54,7 @@ const pageTitle =
   <section class="fragments-sheet" id={anchorId}>
     <header class="fragments-sheet__header">
       <div class="fragments-sheet__headline">
-        <span class="eyebrow">Fragments</span>
         <h1>片段</h1>
-        <p class="text-muted">
-          这里放的是短笺、边注和一时记下的话。它们未必长成文章，但仍然保留着当时的语气。
-        </p>
       </div>
       <div class="fragments-sheet__meta">
         <span>{tweets.length} 条片段</span>
@@ -82,7 +78,6 @@ const pageTitle =
             data-overflow="false"
           >
             <header class="tweet-note__meta">
-              <span class="tweet-note__eyebrow">Note</span>
               <time datetime={pubDate?.toISOString()}>
                 {pubDate?.toLocaleDateString('zh-CN')}
               </time>
@@ -116,7 +111,6 @@ const pageTitle =
     <article class="tweet-note-dialog__sheet">
       <header class="tweet-note-dialog__header">
         <div class="tweet-note-dialog__meta">
-          <span class="tweet-note-dialog__eyebrow">Note</span>
           <time data-tweet-note-dialog-date></time>
         </div>
         <button
