@@ -2,6 +2,40 @@ import { defineConfig } from 'astro/config';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 
+const codeLanguages = [
+  'javascript',
+  'typescript',
+  'python',
+  'bash',
+  'yaml',
+  'json',
+  'c',
+  'cpp',
+  'powershell',
+  'plaintext',
+];
+
+const codeLanguageIds = new Set(codeLanguages);
+
+function normalizeFenceLanguage() {
+  const visit = (node) => {
+    if (!node || typeof node !== 'object') return;
+
+    if (node.type === 'code' && typeof node.lang === 'string') {
+      const lang = node.lang.trim().toLowerCase();
+      node.lang = codeLanguageIds.has(lang) ? lang : 'plaintext';
+    }
+
+    if (Array.isArray(node.children)) {
+      node.children.forEach(visit);
+    }
+  };
+
+  return (tree) => {
+    visit(tree);
+  };
+}
+
 function normalizeLegacyMath() {
   const visit = (node) => {
     if (!node || typeof node !== 'object') return;
@@ -28,26 +62,16 @@ export default defineConfig({
   trailingSlash: 'always',
   markdown: {
     syntaxHighlight: 'shiki',
-    syntaxHighlightOptions: {
-      theme: {
+    shikiConfig: {
+      themes: {
         light: 'github-light',
         dark: 'github-dark',
       },
-      langs: [
-        'javascript',
-        'typescript',
-        'python',
-        'bash',
-        'yaml',
-        'json',
-        'c',
-        'cpp',
-        'powershell',
-        'plaintext',
-      ],
+      defaultColor: false,
       wrap: true,
+      langs: codeLanguages,
     },
-    remarkPlugins: [remarkMath, normalizeLegacyMath],
+    remarkPlugins: [remarkMath, normalizeLegacyMath, normalizeFenceLanguage],
     rehypePlugins: [rehypeKatex],
   },
   devToolbar: {

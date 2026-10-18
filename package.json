@@ -8,9 +8,9 @@
   },
   "scripts": {
     "fetch:content:ssh": "git clone --depth 1 git@github.com:Jenway/blog_content.git ./src/content",
-    "fetch:content:https": "git clone --depth 1 https://${GH_TOKEN}@github.com/Jenway/blog_content.git ./src/content",
-    "dev:content": "pnpm clean:content && pnpm fetch:content:ssh && pnpm dev",
-    "build:ci": "pnpm clean:content && pnpm fetch:content:https && pnpm build",
+    "fetch:content:https": "node ./scripts/clone-content.mjs",
+    "dev:content": "pnpm fetch:content:ssh && pnpm dev",
+    "build:ci": "pnpm fetch:content:https && pnpm build",
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
